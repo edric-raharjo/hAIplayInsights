@@ -205,12 +205,47 @@ function treeShowError(msg) {
     box.style.display = 'block';
 }
 
+let currentLeafX = 0;
+
+function assignTreeX(node) {
+    if (!node) return;
+    if (!node.left && !node.right) {
+        node.x = currentLeafX;
+        currentLeafX += 220;
+        return;
+    }
+    assignTreeX(node.left);
+    assignTreeX(node.right);
+    if (node.left && node.right) {
+        node.x = (node.left.x + node.right.x) / 2;
+    } else if (node.left) {
+        node.x = node.left.x;
+    } else if (node.right) {
+        node.x = node.right.x;
+    }
+}
+
+function assignTreeY(node, depth, baseY) {
+    if (!node) return;
+    node.y = baseY + depth * 120;
+    assignTreeY(node.left, depth + 1, baseY);
+    assignTreeY(node.right, depth + 1, baseY);
+}
+
 function treeCalculateLayout(node, x, y, dx) {
     if (!node) return;
-    node.x = x;
-    node.y = y;
-    if (node.left) treeCalculateLayout(node.left, x - dx, y + 100, dx * 0.5);  
-    if (node.right) treeCalculateLayout(node.right, x + dx, y + 100, dx * 0.5);
+    currentLeafX = 0;
+    assignTreeX(node);
+    assignTreeY(node, 0, y);
+    
+    let diff = x - node.x;
+    function applyDx(n) {
+        if (!n) return;
+        n.x += diff;
+        applyDx(n.left);
+        applyDx(n.right);
+    }
+    applyDx(node);
 }
 
 function treeRenderViz() {
