@@ -132,7 +132,7 @@
 <body>
   <header>
     <div class="container">
-      <div class="logo">?? DS Algorithms</div>
+      <div class="logo">&#128202; DS Algorithms</div>
       <nav>
         <a href="#home">Home</a>
         <a href="#kmeans">K-Means</a>
@@ -188,6 +188,12 @@
         // Parse the fetched HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
+        
+        // Inject component styles
+        const styles = doc.querySelectorAll('style');
+        styles.forEach(style => {
+          document.head.appendChild(style.cloneNode(true));
+        });
         
         // Find the main demo container in the fetched file
         const container = doc.querySelector('.container.demo-section');
