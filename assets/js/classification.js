@@ -51,6 +51,14 @@ function classificationShowImage(index) {
   slideContainer.style.padding = '2rem';
   slideContainer.style.animation = 'fadeIn 0.3s ease-in';
 
+    const progressText = document.createElement('p');
+  progressText.textContent = `Slide ${index + 1} / ${classificationState.demoData.session.length}`;
+  progressText.style.marginBottom = '12px';
+  progressText.style.color = '#6b7280';
+  progressText.style.fontSize = '14px';
+  progressText.style.fontWeight = 'bold';
+  slideContainer.appendChild(progressText);
+
   // Story text (Officer Doggo)
   const storyText = document.createElement('h3');
   storyText.textContent = imageData.story_text || "Officer Doggo is inspecting an item...";

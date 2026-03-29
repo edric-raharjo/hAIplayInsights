@@ -257,7 +257,10 @@ function treeDrawNodeElements(svg, node) {
     circle.setAttribute('width', 140);
     circle.setAttribute('height', 60);
     circle.setAttribute('rx', 8);
-    circle.setAttribute('class', node.id === treeState.activeNode?.id ? 'node-circle active' : 'node-circle');
+    let circleClass = 'node-circle';
+    if(node.gini === 0) circleClass += ' pure';
+    if(node.id === treeState.activeNode?.id) circleClass += ' active';
+    circle.setAttribute('class', circleClass);
     
     let text1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text1.setAttribute('x', node.x);

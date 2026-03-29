@@ -23,7 +23,8 @@
         .feature-split-btn:hover { background: #059669; }
         
         .node-circle { cursor: pointer; fill: white; stroke: #2563eb; stroke-width: 2; transition: all 0.2s; }
-        .node-circle.active { fill: #EFF6FF; stroke: #1D4ED8; stroke-width: 4; }
+        .node-circle.pure { fill: #d1fae5 !important; stroke: #10b981 !important; }
+.node-circle.active { fill: #EFF6FF; stroke: #1D4ED8; stroke-width: 4; }
         .node-text { font-size: 12px; font-family: sans-serif; pointer-events: none; }
         .node-label { font-size: 14px; font-weight: bold; fill: #1f2937; }
         
@@ -42,9 +43,9 @@
 .tree-layout { display: flex; gap: 2rem; flex-wrap: nowrap; }
 @media (max-width: 900px) { .tree-layout { flex-wrap: wrap; } }
 .tree-viz-panel { flex: 2; min-width: 500px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow-x: auto; padding: 1.5rem; position: relative; }
-.tree-data-panel { flex: 1.5; min-width: 400px; display: flex; flex-direction: column; gap: 1rem; }
+.tree-data-panel { flex: 1.5; min-width: 300px; display: flex; flex-direction: column; gap: 1rem; overflow: hidden; }
 .tree-error-box { background: #fef2f2; border: 1px solid #ef4444; color: #b91c1c; padding: 1rem; border-radius: 6px; display: none; font-weight: bold; }
-.tree-table-container { max-height: 450px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+.tree-table-container { max-height: 450px; overflow-y: auto; overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; width: 100%; box-sizing: border-box; }
 .tree-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .tree-table th, .tree-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: center; }
 .tree-table th { background: #f9fafb; position: sticky; top: 0; z-index: 10; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
