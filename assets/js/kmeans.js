@@ -1,5 +1,5 @@
 /**
- * K-Means Clustering Interactive Demo (Embedded version)
+ * K-Means Clustering Interactive Demo
  */
 
 let kmeansState = {
@@ -15,12 +15,11 @@ async function initKmeans() {
   try {
     kmeansState.demoData = await loadJSON('data/kmeans_demo.json');
     
-    document.getElementById('kmeansBtnInitial').addEventListener('click', kmeansGoInitial);
-    document.getElementById('kmeansBtnAssign').addEventListener('click', () => kmeansAdvanceToPhase('assign'));
-    document.getElementById('kmeansBtnCenter').addEventListener('click', () => kmeansAdvanceToPhase('update'));
-    document.getElementById('kmeansButtonReset').addEventListener('click', kmeansResetDemo);
-    document.getElementById('kmeansButtonAutoPlay').addEventListener('click', kmeansToggleAutoPlay);
-    
+    document.getElementById('kmeansBtnPrevious').addEventListener('click', kmeansPreviousStep);
+    document.getElementById('kmeansBtnNext').addEventListener('click', kmeansNextStep);
+    document.getElementById('kmeansBtnReset').addEventListener('click', kmeansResetDemo);
+    document.getElementById('kmeansBtnAutoPlay').addEventListener('click', kmeansToggleAutoPlay);
+
     kmeansRenderStep(0);
   } catch (error) {
     console.error('Failed to initialize K-means demo:', error);
@@ -28,110 +27,79 @@ async function initKmeans() {
 }
 
 function kmeansRenderStep(stepIndex) {
-  if (!kmeansState.demoData || stepIndex < 0 || stepIndex >= kmeansState.demoData.steps.length) {
-    return;
-  }
+  if (!kmeansState.demoData || stepIndex < 0 || stepIndex >= kmeansState.demoData.steps.length) return;
   
   kmeansState.currentStep = stepIndex;
   const step = kmeansState.demoData.steps[stepIndex];
-  
+
   document.getElementById('kmeansStepDescription').textContent = step.description;
   document.getElementById('kmeansStatPoints').textContent = step.points.length;
   document.getElementById('kmeansStatClusters').textContent = kmeansState.demoData.metadata.k;
   document.getElementById('kmeansStatIteration').textContent = step.iteration;
   document.getElementById('kmeansStatPhase').textContent = step.phase;
-  
+
   const progress = ((stepIndex + 1) / kmeansState.demoData.steps.length) * 100;
   document.getElementById('kmeansProgressFill').style.width = progress + '%';
-  document.getElementById('kmeansProgressText').textContent = `${stepIndex + 1} / ${kmeansState.demoData.steps.length}`;
-  
-  document.getElementById('kmeansBtnInitial').disabled = stepIndex === 0;
-  document.getElementById('kmeansBtnAssign').disabled = kmeansState.demoData.steps.findIndex((s, i) => i > stepIndex && s.phase === 'assign') === -1;
-  document.getElementById('kmeansBtnCenter').disabled = kmeansState.demoData.steps.findIndex((s, i) => i > stepIndex && s.phase === 'update') === -1;
-  
+  document.getElementById('kmeansProgressText').textContent = \\ / \\;
+
+  document.getElementById('kmeansBtnPrevious').disabled = stepIndex === 0;
+  document.getElementById('kmeansBtnNext').disabled = stepIndex === kmeansState.demoData.steps.length - 1;
+
   kmeansDrawVisualization(step);
 }
 
 function kmeansDrawVisualization(step) {
-  const canvas = document.getElementById('canvasKmeans');
+  const canvas = document.getElementById('kmeansCanvas');
+  if(!canvas) return;
   const ctx = canvas.getContext('2d');
   const padding = 50;
   const width = canvas.width - 2 * padding;
   const height = canvas.height - 2 * padding;
-  
+
   ctx.fillStyle = '#fafafa';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
+
   ctx.strokeStyle = '#e5e7eb';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 10; i++) {
     const x = padding + (width / 10) * i;
     const y = padding + (height / 10) * i;
-    ctx.beginPath();
-    ctx.moveTo(x, padding);
-    ctx.lineTo(x, canvas.height - padding);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(padding, y);
-    ctx.lineTo(canvas.width - padding, y);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, padding); ctx.lineTo(x, canvas.height - padding); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(canvas.width - padding, y); ctx.stroke();
   }
-  
+
   ctx.strokeStyle = '#1f2937';
   ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(padding, canvas.height - padding);
-  ctx.lineTo(canvas.width - padding, canvas.height - padding);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(padding, padding);
-  ctx.lineTo(padding, canvas.height - padding);
-  ctx.stroke();
-  
+  ctx.beginPath(); ctx.moveTo(padding, canvas.height - padding); ctx.lineTo(canvas.width - padding, canvas.height - padding); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(padding, padding); ctx.lineTo(padding, canvas.height - padding); ctx.stroke();
+
   const toCanvasX = (x) => padding + (x / 100) * width;
   const toCanvasY = (y) => canvas.height - padding - (y / 100) * height;
-  
+
   step.points.forEach((point, idx) => {
     const canvasX = toCanvasX(point[0]);
     const canvasY = toCanvasY(point[1]);
-    
     let color = '#d1d5db';
-    if (step.assignments[idx] !== null && step.assignments[idx] !== undefined) {
+    if (step.assignments && step.assignments[idx] !== null && step.assignments[idx] !== undefined) {
       color = KMEANS_COLORS[step.assignments[idx] % KMEANS_COLORS.length];
     }
-    
     ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    ctx.strokeStyle = '#6b7280';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.beginPath(); ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI); ctx.fill();
+    ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1; ctx.stroke();
   });
-  
-  step.centers.forEach((center, idx) => {
-    const canvasX = toCanvasX(center[0]);
-    const canvasY = toCanvasY(center[1]);
-    
-    ctx.fillStyle = KMEANS_COLORS[idx % KMEANS_COLORS.length];
-    ctx.beginPath();
-    ctx.arc(canvasX, canvasY, 8, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    ctx.strokeStyle = '#1f2937';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    
-    ctx.fillStyle = 'white';
-    ctx.beginPath();
-    ctx.arc(canvasX, canvasY, 3, 0, 2 * Math.PI);
-    ctx.fill();
-  });
-  
-  ctx.fillStyle = '#6b7280';
-  ctx.font = '12px sans-serif';
-  ctx.textAlign = 'right';
+
+  if (step.centers) {
+    step.centers.forEach((center, idx) => {
+      const canvasX = toCanvasX(center[0]);
+      const canvasY = toCanvasY(center[1]);
+      ctx.fillStyle = KMEANS_COLORS[idx % KMEANS_COLORS.length];
+      ctx.beginPath(); ctx.arc(canvasX, canvasY, 8, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = 'white'; ctx.beginPath(); ctx.arc(canvasX, canvasY, 3, 0, 2 * Math.PI); ctx.fill();
+    });
+  }
+
+  ctx.fillStyle = '#6b7280'; ctx.font = '12px sans-serif'; ctx.textAlign = 'right';
   for (let i = 0; i <= 5; i++) {
     ctx.fillText((i * 20).toString(), padding - 10, canvas.height - padding - (height / 5) * i + 4);
   }
@@ -141,15 +109,12 @@ function kmeansDrawVisualization(step) {
   }
 }
 
-function kmeansGoInitial() {
-  kmeansRenderStep(0);
+function kmeansPreviousStep() {
+  if (kmeansState.currentStep > 0) kmeansRenderStep(kmeansState.currentStep - 1);
 }
 
-function kmeansAdvanceToPhase(targetPhase) {
-  const nextIdx = kmeansState.demoData.steps.findIndex((s, i) => i > kmeansState.currentStep && s.phase === targetPhase);
-  if (nextIdx !== -1) {
-    kmeansRenderStep(nextIdx);
-  }
+function kmeansNextStep() {
+  if (kmeansState.currentStep < kmeansState.demoData.steps.length - 1) kmeansRenderStep(kmeansState.currentStep + 1);
 }
 
 function kmeansResetDemo() {
@@ -167,15 +132,14 @@ function kmeansToggleAutoPlay() {
 
 function kmeansStartAutoPlay() {
   kmeansState.isAutoPlaying = true;
-  document.getElementById('kmeansButtonAutoPlay').textContent = '⏸ Stop';
-  
+  document.getElementById('kmeansBtnAutoPlay').textContent = '? Stop';
   kmeansState.autoPlayInterval = setInterval(() => {
     if (kmeansState.currentStep < kmeansState.demoData.steps.length - 1) {
       kmeansRenderStep(kmeansState.currentStep + 1);
     } else {
       kmeansStopAutoPlay();
     }
-  }, 1500);
+  }, 1000);
 }
 
 function kmeansStopAutoPlay() {
@@ -184,5 +148,6 @@ function kmeansStopAutoPlay() {
     clearInterval(kmeansState.autoPlayInterval);
     kmeansState.autoPlayInterval = null;
   }
-  document.getElementById('kmeansButtonAutoPlay').textContent = 'Auto Play';
+  let btn = document.getElementById('kmeansBtnAutoPlay');
+  if(btn) btn.textContent = 'Auto Play';
 }

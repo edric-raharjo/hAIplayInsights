@@ -79,7 +79,7 @@ function classificationShowImage(index) {
   ballTracker.style.border = '2px solid #ef4444';
   ballTracker.style.borderRadius = '8px';
   ballTracker.style.minWidth = '120px';
-  ballTracker.innerHTML = `<h4 style="margin:0 0 10px 0;color:#ef4444;">🎾 Ball</h4><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${ballsLabeled}</div>`;
+  ballTracker.innerHTML = `<span style="font-size:0.9rem;font-weight:bold;color:#ef4444;margin-bottom:5px;display:block;">History (Ball)</span><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${ballsLabeled}</div>`;
 
   const notBallsLabeled = classificationState.userLabels.map((l, i) => l === 0 ? (classificationState.demoData.session[i].emoji || '📦') : '').join('');
   const notBallTracker = document.createElement('div');
@@ -87,7 +87,7 @@ function classificationShowImage(index) {
   notBallTracker.style.border = '2px solid #6b7280';
   notBallTracker.style.borderRadius = '8px';
   notBallTracker.style.minWidth = '120px';
-  notBallTracker.innerHTML = `<h4 style="margin:0 0 10px 0;color:#6b7280;">✅ Not Ball</h4><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${notBallsLabeled}</div>`;
+  notBallTracker.innerHTML = `<span style="font-size:0.9rem;font-weight:bold;color:#6b7280;margin-bottom:5px;display:block;">History (Not Ball)</span><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${notBallsLabeled}</div>`;
 
   trackerContainer.appendChild(ballTracker);
   trackerContainer.appendChild(notBallTracker);
@@ -188,6 +188,7 @@ function classificationShowResults() {
   document.getElementById('btnNotBall').style.display = 'none';
   document.getElementById('btnSubmit').style.display = 'none';
 }
+
 
 
 

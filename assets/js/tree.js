@@ -1,5 +1,8 @@
+/**
+ * Decision Tree with Gini Impurity Interactive Demo
+ */
 
-const treeState = {
+let treeState = {
     samples: [
         { age: 25, income: 45000, employment_years: 2, label: 0 },
         { age: 30, income: 55000, employment_years: 4, label: 1 },
@@ -20,15 +23,19 @@ const treeState = {
         { age: 31, income: 58000, employment_years: 3, label: 1 },
         { age: 34, income: 62000, employment_years: 6, label: 0 },
         { age: 39, income: 72000, employment_years: 8, label: 1 },
-        { age: 55, income: 100000, employment_years: 20, label: 1 }
+        { age: 55, income: 100000, employment_years: 20, label: 1 },
+        { age: 60, income: 110000, employment_years: 25, label: 1 },
+        { age: 20, income: 25000, employment_years: 0, label: 0 },
+        { age: 41, income: 76000, employment_years: 9, label: 1 },
+        { age: 47, income: 88000, employment_years: 11, label: 0 },
+        { age: 52, income: 98000, employment_years: 14, label: 1 }
     ],
     features: ['age', 'income', 'employment_years'],
     root: null,
     activeNode: null,
-    pendingSplit: null // { feature, threshold, leftSamples, rightSamples }
+    nextNodeId: 1
 };
 
-// Calculate Gini Impurity for a set of samples
 function calculateGini(samples) {
     if (samples.length === 0) return 0;
     let counts = { 0: 0, 1: 0 };
@@ -38,37 +45,30 @@ function calculateGini(samples) {
     return 1 - (p0 * p0 + p1 * p1);
 }
 
-// Find best split for a given feature
 function findBestSplitForFeature(samples, feature) {
     if (samples.length < 2) return null;
-    
-    // Check if node is pure
     let counts = { 0: 0, 1: 0 };
     samples.forEach(s => counts[s.label]++);
     if (counts[0] === samples.length || counts[1] === samples.length) return null;
-    
-    samples.sort((a, b) => a[feature] - b[feature]);
-    
+
+    let sorted = [...samples].sort((a, b) => a[feature] - b[feature]);
     let bestGini = Infinity;
     let bestThreshold = null;
     let bestLeft = [];
     let bestRight = [];
     
-    for (let i = 0; i < samples.length - 1; i++) {
-        if (samples[i][feature] === samples[i+1][feature]) continue;
-        
-        let threshold = (samples[i][feature] + samples[i+1][feature]) / 2;
-        let left = samples.slice(0, i + 1);
-        let right = samples.slice(i + 1);
+    for (let i = 0; i < sorted.length - 1; i++) {
+        if (sorted[i][feature] === sorted[i+1][feature]) continue;
+        let threshold = (sorted[i][feature] + sorted[i+1][feature]) / 2;
+        let left = sorted.slice(0, i + 1);
+        let right = sorted.slice(i + 1);
         
         let giniLeft = calculateGini(left);
         let giniRight = calculateGini(right);
+        let weightedGini = (left.length / samples.length) * giniLeft + (right.length / samples.length) * giniRight;
         
-        // Weighted Gini
-        let gini = (left.length / samples.length) * giniLeft + (right.length / samples.length) * giniRight;
-        
-        if (gini < bestGini) {
-            bestGini = gini;
+        if (weightedGini < bestGini) {
+            bestGini = weightedGini;
             bestThreshold = threshold;
             bestLeft = left;
             bestRight = right;
@@ -76,331 +76,229 @@ function findBestSplitForFeature(samples, feature) {
     }
     
     if (bestThreshold === null) return null;
+    return { feature, threshold: bestThreshold, gini: bestGini, left: bestLeft, right: bestRight };
+}
+
+function initTree() {
+    let btnIdeal = document.getElementById('btnIdealTree');
+    let btnReset = document.getElementById('btnResetTree');
+    if(btnIdeal) btnIdeal.addEventListener('click', treeBuildIdeal);
+    if(btnReset) btnReset.addEventListener('click', treeReset);
     
-    return { feature, threshold: bestThreshold, gini: bestGini, leftSamples: bestLeft, rightSamples: bestRight };
+    treeReset();
 }
 
-// Global best split search just for hint
-function findOverallBestSplit(samples) {
-    let best = null;
-    treeState.features.forEach(f => {
-        let split = findBestSplitForFeature(samples, f);
-        if (split && (!best || split.gini < best.gini)) {
-            best = split;
-        }
-    });
-    return best;
-}
-
-// Initialize tree
-window.initTree = function() {
+function treeReset() {
+    treeState.nextNodeId = 1;
+    let initialGini = calculateGini(treeState.samples);
     treeState.root = {
-        id: 'node_0',
+        id: treeState.nextNodeId++,
         samples: [...treeState.samples],
-        gini: calculateGini(treeState.samples),
-        depth: 0,
-        x: 400,
-        y: 50,
+        gini: initialGini,
+        feature: null,
+        threshold: null,
         left: null,
         right: null,
-        splitFeature: null,
-        splitThreshold: null
+        x: 500,
+        y: 50
     };
-    treeState.activeNode = treeState.root;
-    
-    // Attach event listeners
-    const el = document.getElementById('btnGiniAge');
-    if (el) el.onclick = () => treeCalculateFeatureGini('age');
-    const el2 = document.getElementById('btnGiniIncome');
-    if (el2) el2.onclick = () => treeCalculateFeatureGini('income');
-    const el3 = document.getElementById('btnGiniYears');
-    if (el3) el3.onclick = () => treeCalculateFeatureGini('employment_years');
-    
-    const elSplit = document.getElementById('btnApplySplit');
-    if (elSplit) elSplit.onclick = treeExecuteSplit;
-    
-    const elReset = document.getElementById('treeReset');
-    if (elReset) elReset.onclick = window.initTree;
-    
-    const elHint = document.getElementById('treeShowHint');
-    if (elHint) elHint.onclick = () => {
-        const node = treeState.activeNode;
-        if (!node) return;
-        const best = findOverallBestSplit(node.samples);
-        if (best) {
-            alert(`Hint: The optimal split is '${best.feature}' with a Gini impurity of ${best.gini.toFixed(4)}.`);
-        } else {
-            alert("No further splits possible here (node may be pure or identical values).");
-        }
-    };
-    
-    treeRenderActiveNode();
-    treeDrawSVG();
-};
+    treeSetActiveNode(treeState.root);
+    treeRenderViz();
+}
 
-function treeCalculateFeatureGini(featName) {
-    if (!treeState.activeNode) return;
-    const node = treeState.activeNode;
+function treeSetActiveNode(node) {
+    treeState.activeNode = node;
+    document.getElementById('treeErrorBox').style.display = 'none';
     
-    // Is node pure or too small?
+    // Update table
+    let tbody = document.getElementById('treeTableBody');
+    tbody.innerHTML = '';
+    node.samples.forEach(s => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = \<td>\</td><td>$\</td><td>\</td><td><span style="padding: 2px 6px; border-radius: 4px; background: \; color: \;">\</span></td>\;
+        tbody.appendChild(tr);
+    });
+    
+    document.getElementById('treeNodeSamplesCount').textContent = node.samples.length;
+    document.getElementById('treeTargetGini').textContent = node.gini.toFixed(4);
+    
+    let featuresContainer = document.getElementById('treeFeaturesContainer');
+    featuresContainer.innerHTML = '';
+    
     if (node.gini === 0 || node.samples.length < 2) {
-        alert("This node is either pure or too small to split further.");
+        featuresContainer.innerHTML = '<p style="color: #059669; font-weight: bold;">? Node is pure. No further splits needed.</p>';
         return;
     }
-    
-    const split = findBestSplitForFeature(node.samples, featName);
-    
-    if (!split) {
-        alert("Cannot split on this feature (all values might be the same).");
-        return;
-    }
-    
-    treeState.pendingSplit = split;
-    
-    // Update Action Area
-    const actionArea = document.getElementById('splitActionArea');
-    if (!actionArea) return;
-    
-    const actionText = document.getElementById('splitActionText');
-    const leftCount = document.getElementById('splitActionLeftCount');
-    const rightCount = document.getElementById('splitActionRightCount');
-    const actionGini = document.getElementById('splitActionGini');
-    
-    let threshDisp = split.threshold;
-    if (featName === 'income') threshDisp = "$" + split.threshold;
-    
-    if (actionText) actionText.textContent = `Split on: ${featName} <= ${threshDisp}`;
-    if (leftCount) leftCount.textContent = split.leftSamples.length;
-    if (rightCount) rightCount.textContent = split.rightSamples.length;
-    if (actionGini) actionGini.textContent = split.gini.toFixed(4);
-    
-    actionArea.style.display = 'block';
-}
-
-function treeExecuteSplit() {
-    if (!treeState.activeNode || !treeState.pendingSplit) return;
-    
-    const node = treeState.activeNode;
-    const split = treeState.pendingSplit;
-    
-    // Prevent overriding existing splits via UI
     if (node.left || node.right) {
-         alert("Node already split!");
-         return;
-    }
-    
-    node.splitFeature = split.feature;
-    node.splitThreshold = split.threshold;
-    
-    const xOffset = 300 / Math.pow(2, node.depth + 1.2);
-    const yOffset = 80;
-    
-    node.left = {
-        id: node.id + '_L',
-        samples: split.leftSamples,
-        gini: calculateGini(split.leftSamples),
-        depth: node.depth + 1,
-        x: node.x - xOffset,
-        y: node.y + yOffset,
-        left: null,
-        right: null,
-        splitFeature: null,
-        splitThreshold: null
-    };
-    
-    node.right = {
-        id: node.id + '_R',
-        samples: split.rightSamples,
-        gini: calculateGini(split.rightSamples),
-        depth: node.depth + 1,
-        x: node.x + xOffset,
-        y: node.y + yOffset,
-        left: null,
-        right: null,
-        splitFeature: null,
-        splitThreshold: null
-    };
-    
-    treeState.pendingSplit = null;
-    const area = document.getElementById('splitActionArea');
-    if (area) area.style.display = 'none';
-    
-    // Set active to the new left child automatically
-    treeState.activeNode = node.left;
-    
-    treeRenderActiveNode();
-    treeDrawSVG();
-}
-
-
-function treeRenderActiveNode() {
-    const tableBody = document.getElementById('treeDatasetTableBody');
-    if (tableBody) tableBody.innerHTML = '';
-    
-    const node = treeState.activeNode;
-    
-    const area = document.getElementById('splitActionArea');
-    if (area) area.style.display = 'none';
-    treeState.pendingSplit = null;
-    
-    const nodeTitle = document.getElementById('treeNodeTitle');
-    const giniText = document.getElementById('treeCurrentGini');
-    const samplesCount = document.getElementById('treeSampleCount');
-    let calcRow = document.getElementById('calcGiniRow');
-    if (!calcRow) {
-        // Fallback for calcGiniRow missing ID potentially, let's grab the row holding btnGiniAge
-        const btnAge = document.getElementById('btnGiniAge');
-        if (btnAge) calcRow = btnAge.closest('tr');
-    }
-    
-    if (!node) {
-        if (nodeTitle) nodeTitle.textContent = "No Node Selected";
-        if (giniText) giniText.textContent = "-";
-        if (samplesCount) samplesCount.textContent = "0";
-        if (calcRow) calcRow.style.display = 'none';
+        featuresContainer.innerHTML = '<p style="color: #6b7280; font-style: italic;">Node already split. Select a leaf node to continue.</p>';
         return;
     }
+
+    const featureNames = { age: 'Age', income: 'Income', employment_years: 'Emp. Yrs' };
     
-    if (nodeTitle) nodeTitle.textContent = node.id === 'node_0' ? 'Root Node Data' : `Node '${node.id}' Data`;
-    if (giniText) giniText.textContent = node.gini.toFixed(4);
-    if (samplesCount) samplesCount.textContent = node.samples.length;
-    
-    // Hide Gini calculation buttons for pure/empty/split nodes
-    if (calcRow) {
-        if (node.gini === 0 || node.left || node.right) {
-            calcRow.style.display = 'none';
-        } else {
-            calcRow.style.display = 'table-row';
-        }
+    treeState.features.forEach(f => {
+        let row = document.createElement('div');
+        row.className = 'feature-row';
+        
+        let label = document.createElement('span');
+        label.style.fontWeight = 'bold';
+        label.textContent = featureNames[f];
+        
+        let actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '0.5rem';
+        actions.style.alignItems = 'center';
+        
+        let info = document.createElement('span');
+        info.style.fontSize = '0.85rem';
+        info.style.color = '#4b5563';
+        
+        let btnCalc = document.createElement('button');
+        btnCalc.className = 'feature-calc-btn';
+        btnCalc.textContent = 'Calculate Gini';
+        
+        let btnSplit = document.createElement('button');
+        btnSplit.className = 'feature-split-btn';
+        btnSplit.textContent = 'Split Here!';
+        
+        row.appendChild(label);
+        actions.appendChild(info);
+        actions.appendChild(btnCalc);
+        actions.appendChild(btnSplit);
+        row.appendChild(actions);
+        featuresContainer.appendChild(row);
+        
+        btnCalc.addEventListener('click', () => {
+            let splitInfo = findBestSplitForFeature(node.samples, f);
+            if (!splitInfo) {
+                info.textContent = 'Cannot split';
+            } else {
+                info.textContent = \Thresh: \ < \ | Gini: \\;
+                btnSplit.style.display = 'inline-block';
+                btnCalc.style.display = 'none';
+                
+                btnSplit.onclick = () => {
+                    if (splitInfo.gini >= node.gini) {
+                        treeShowError("This split does not reduce the Gini Impurity! Try another feature.");
+                        return;
+                    }
+                    node.feature = splitInfo.feature;
+                    node.threshold = splitInfo.threshold;
+                    node.left = { id: treeState.nextNodeId++, samples: splitInfo.left, gini: calculateGini(splitInfo.left), feature: null, threshold: null, left: null, right: null };
+                    node.right = { id: treeState.nextNodeId++, samples: splitInfo.right, gini: calculateGini(splitInfo.right), feature: null, threshold: null, left: null, right: null };
+                    
+                    treeRenderViz();
+                    treeSetActiveNode(node.left); // Default select left child
+                };
+            }
+        });
+    });
+}
+
+function treeShowError(msg) {
+    let box = document.getElementById('treeErrorBox');
+    box.textContent = msg;
+    box.style.display = 'block';
+}
+
+function treeCalculateLayout(node, x, y, dx) {
+    if (!node) return;
+    node.x = x;
+    node.y = y;
+    if (node.left) treeCalculateLayout(node.left, x - dx, y + 100, dx * 0.55);
+    if (node.right) treeCalculateLayout(node.right, x + dx, y + 100, dx * 0.55);
+}
+
+function treeRenderViz() {
+    let svg = document.getElementById('treeCanvas');
+    svg.innerHTML = '';
+    treeCalculateLayout(treeState.root, 500, 50, 240);
+    treeDrawNodeConnections(svg, treeState.root);
+    treeDrawNodeElements(svg, treeState.root);
+}
+
+function treeDrawNodeConnections(svg, node) {
+    if (!node) return;
+    if (node.left) {
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', node.x); line.setAttribute('y1', node.y);
+        line.setAttribute('x2', node.left.x); line.setAttribute('y2', node.left.y);
+        line.setAttribute('stroke', '#cbd5e1'); line.setAttribute('stroke-width', '2');
+        svg.appendChild(line);
+        treeDrawNodeConnections(svg, node.left);
     }
+    if (node.right) {
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', node.x); line.setAttribute('y1', node.y);
+        line.setAttribute('x2', node.right.x); line.setAttribute('y2', node.right.y);
+        line.setAttribute('stroke', '#cbd5e1'); line.setAttribute('stroke-width', '2');
+        svg.appendChild(line);
+        treeDrawNodeConnections(svg, node.right);
+    }
+}
+
+function treeDrawNodeElements(svg, node) {
+    if (!node) return;
     
-    if (tableBody) {
-        const displaySamples = node.samples.slice(0, 10);
-        displaySamples.forEach(sample => {
-            const row = document.createElement('tr');
-            const labelStr = sample.label === 1 ? 'Yes' : 'No';
-            const labelColor = sample.label === 1 ? '#059669' : '#dc2626';
-            const incomeStr = (sample.income / 1000).toFixed(0) + "k";
-            row.innerHTML = `<td style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); text-align: center;">${sample.age}</td>
-                             <td style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); text-align: center;">${incomeStr}</td>
-                             <td style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); text-align: center;">${sample.employment_years}</td>
-                             <td style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); text-align: center; font-weight:bold; color: ${labelColor};">${labelStr}</td>`;
-            tableBody.appendChild(row);
+    let g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.style.cursor = 'pointer';
+    g.onclick = () => {
+        treeSetActiveNode(node);
+        treeRenderViz();
+    };
+
+    let circle = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    circle.setAttribute('x', node.x - 70);
+    circle.setAttribute('y', node.y - 30);
+    circle.setAttribute('width', 140);
+    circle.setAttribute('height', 60);
+    circle.setAttribute('rx', 8);
+    circle.setAttribute('class', node.id === treeState.activeNode?.id ? 'node-circle active' : 'node-circle');
+    
+    let text1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text1.setAttribute('x', node.x);
+    text1.setAttribute('y', node.y - 5);
+    text1.setAttribute('text-anchor', 'middle');
+    text1.setAttribute('class', 'node-label');
+    text1.textContent = node.feature ? \\ < \\ : "Leaf";
+
+    let text2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text2.setAttribute('x', node.x);
+    text2.setAttribute('y', node.y + 15);
+    text2.setAttribute('text-anchor', 'middle');
+    text2.setAttribute('class', 'node-text');
+    text2.textContent = \G: \ | n=\\;
+    
+    g.appendChild(circle);
+    g.appendChild(text1);
+    g.appendChild(text2);
+    svg.appendChild(g);
+    
+    treeDrawNodeElements(svg, node.left);
+    treeDrawNodeElements(svg, node.right);
+}
+
+function treeBuildIdeal() {
+    treeReset();
+    let queue = [treeState.root];
+    while(queue.length > 0) {
+        let n = queue.shift();
+        if(n.gini === 0 || n.samples.length < 2) continue;
+        
+        let best = null;
+        treeState.features.forEach(f => {
+            let s = findBestSplitForFeature(n.samples, f);
+            if(s && (!best || s.gini < best.gini)) { best = s; }
         });
         
-        if (node.samples.length > 10) {
-            const info = document.createElement('tr');
-            info.innerHTML = `<td colspan="4" style="padding:0.5rem;text-align:center;color:gray; border-bottom: 1px solid var(--border-color);">... ${node.samples.length - 10} more samples</td>`;
-            tableBody.appendChild(info);
+        if (best && best.gini < n.gini) {
+            n.feature = best.feature;
+            n.threshold = best.threshold;
+            n.left = { id: treeState.nextNodeId++, samples: best.left, gini: calculateGini(best.left), feature: null, threshold: null, left: null, right: null };
+            n.right = { id: treeState.nextNodeId++, samples: best.right, gini: calculateGini(best.right), feature: null, threshold: null, left: null, right: null };
+            queue.push(n.left, n.right);
         }
     }
-}
-
-function treeDrawSVG() {
-    const svg = document.getElementById('treeSvg');
-    if (!svg) return;
-    svg.innerHTML = '';
-    
-    if (!treeState.root) return;
-    
-    let maxDepth = 0;
-    let nodeCount = 0;
-    let leafGiniSum = 0;
-    let leafCount = 0;
-    
-    function drawNode(node) {
-        nodeCount++;
-        if (node.depth > maxDepth) maxDepth = node.depth;
-        
-        if (!node.left && !node.right) {
-            leafCount++;
-            leafGiniSum += node.gini;
-        }
-        
-        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        g.style.cursor = 'pointer';
-        
-        const isAct = (treeState.activeNode && treeState.activeNode.id === node.id);
-        
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', node.x - 60);
-        rect.setAttribute('y', node.y - 30);
-        rect.setAttribute('width', 120);
-        rect.setAttribute('height', 60);
-        rect.setAttribute('rx', 8);
-        rect.setAttribute('fill', node.gini === 0 ? '#dcfce7' : '#ffffff');
-        rect.setAttribute('stroke', isAct ? '#2563eb' : (node.gini === 0 ? '#10b981' : '#cbd5e1'));
-        rect.setAttribute('stroke-width', isAct ? 3 : 1.5);
-        
-        g.onclick = function() {
-            treeState.activeNode = node;
-            treeRenderActiveNode();
-            treeDrawSVG(); 
-        };
-        
-        const textGini = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        textGini.setAttribute('x', node.x);
-        textGini.setAttribute('y', node.y - 12);
-        textGini.setAttribute('text-anchor', 'middle');
-        textGini.setAttribute('font-size', '11');
-        textGini.setAttribute('fill', '#475569');
-        textGini.textContent = `G: ${node.gini.toFixed(3)} (n=${node.samples.length})`;
-        
-        const textSplit = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        textSplit.setAttribute('x', node.x);
-        textSplit.setAttribute('y', node.y + 10);
-        textSplit.setAttribute('text-anchor', 'middle');
-        textSplit.setAttribute('font-size', '12');
-        textSplit.setAttribute('fill', '#1e293b');
-        textSplit.setAttribute('font-weight', '600');
-        
-        if (node.splitFeature) {
-            let featNm = node.splitFeature;
-            let threshVal = node.splitThreshold;
-            if (featNm === 'income') threshVal = "$" + threshVal;
-            if (featNm === 'employment_years') featNm = "years";
-            textSplit.textContent = `${featNm} <= ${threshVal}`;
-        } else {
-            textSplit.textContent = node.gini === 0 ? "Pure" : "Leaf";
-        }
-        
-        g.appendChild(rect);
-        g.appendChild(textGini);
-        g.appendChild(textSplit);
-        svg.appendChild(g);
-        
-        if (node.left) {
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('x1', node.x);
-            line.setAttribute('y1', node.y + 30);
-            line.setAttribute('x2', node.left.x);
-            line.setAttribute('y2', node.left.y - 30);
-            line.setAttribute('stroke', '#94a3b8');
-            line.setAttribute('stroke-width', 2);
-            svg.insertBefore(line, svg.firstChild); 
-            drawNode(node.left);
-        }
-        
-        if (node.right) {
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('x1', node.x);
-            line.setAttribute('y1', node.y + 30);
-            line.setAttribute('x2', node.right.x);
-            line.setAttribute('y2', node.right.y - 30);
-            line.setAttribute('stroke', '#94a3b8');
-            line.setAttribute('stroke-width', 2);
-            svg.insertBefore(line, svg.firstChild);
-            drawNode(node.right);
-        }
-    }
-    
-    drawNode(treeState.root);
-    
-    // Update stats
-    const dEl = document.getElementById('treeDepth');
-    if (dEl) dEl.textContent = maxDepth;
-    const nCount = document.getElementById('treeNodeCount');
-    if (nCount) nCount.textContent = nodeCount;
-    const avgLeaf = document.getElementById('treeAvgLeafGini');
-    if (avgLeaf) avgLeaf.textContent = leafCount > 0 ? (leafGiniSum / leafCount).toFixed(4) : "-";
+    treeRenderViz();
+    treeSetActiveNode(treeState.root);
 }

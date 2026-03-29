@@ -172,7 +172,7 @@
 
       <!-- Visualization -->
       <div class="canvas-wrapper">
-        <canvas id="canvas" width="600" height="600"></canvas>
+        <canvas id="kmeansCanvas" width="600" height="600"></canvas>
       </div>
 
       <!-- Controls -->
@@ -180,45 +180,45 @@
         <!-- Step Information -->
         <div class="step-info">
           <div class="step-info-label">Current Step</div>
-          <div class="step-info-text" id="stepDescription">Initializing...</div>
+          <div class="step-info-text" id="kmeansStepDescription">Initializing...</div>
         </div>
 
         <!-- Progress -->
         <div class="progress-bar">
           <div class="progress-label">
             <span>Progress</span>
-            <span id="progressText">0 / 0</span>
+            <span id="kmeansProgressText">0 / 0</span>
           </div>
           <div class="progress-track">
-            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            <div class="progress-fill" id="kmeansProgressFill" style="width: 0%;"></div>
           </div>
         </div>
 
         <!-- Control Buttons -->
         <div class="button-grid">
-          <button id="btnPrevious" class="btn btn-outline">← Previous</button>
-          <button id="btnNext" class="btn btn-primary">Next →</button>
-          <button id="btnReset" class="btn btn-outline">Reset</button>
-          <button id="btnAutoPlay" class="btn btn-secondary">Auto Play</button>
+          <button id="kmeansBtnPrevious" class="btn btn-outline">← Previous</button>
+          <button id="kmeansBtnNext" class="btn btn-primary">Next →</button>
+          <button id="kmeansBtnReset" class="btn btn-outline">Reset</button>
+          <button id="kmeansBtnAutoPlay" class="btn btn-secondary">Auto Play</button>
         </div>
 
         <!-- Statistics -->
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">Data Points</div>
-            <div class="stat-value" id="statPoints">0</div>
+            <div class="stat-value" id="kmeansStatPoints">0</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Clusters</div>
-            <div class="stat-value" id="statClusters">0</div>
+            <div class="stat-value" id="kmeansStatClusters">0</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Iteration</div>
-            <div class="stat-value" id="statIteration">0</div>
+            <div class="stat-value" id="kmeansStatIteration">0</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Phase</div>
-            <div class="stat-value" id="statPhase" style="font-size: 1rem; text-transform: capitalize;">-</div>
+            <div class="stat-value" id="kmeansStatPhase" style="font-size: 1rem; text-transform: capitalize;">-</div>
           </div>
         </div>
 
@@ -264,3 +264,4 @@
   <script src="../../assets/js/kmeans.js"></script>
 </body>
 </html>
+
