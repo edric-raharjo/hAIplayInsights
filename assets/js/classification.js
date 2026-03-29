@@ -11,8 +11,12 @@ let classificationState = {
 
 async function initClassification() {
   try {
-    classificationState.demoData = await loadJSON('data/classification_demo.json');
-    classificationState.userLabels = new Array(classificationState.demoData.session.length).fill(null);
+    const btnBall = document.getElementById('btnBall');
+    if (!btnBall) {
+      setTimeout(initClassification, 500);
+      return;
+    }
+
     
     document.getElementById('btnBall').addEventListener('click', () => classificationLabelImage(1));
     document.getElementById('btnNotBall').addEventListener('click', () => classificationLabelImage(0));

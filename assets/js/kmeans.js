@@ -13,10 +13,15 @@ const KMEANS_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#a855f7', '#
 
 async function initKmeans() {
   try {
+    const btnPrevious = document.getElementById('kmeansBtnPrevious');
+    if (!btnPrevious) {
+      console.warn('kmeans components not found in DOM, waiting 500ms...');
+      setTimeout(initKmeans, 500);
+      return;
+    }
+
     kmeansState.demoData = await loadJSON('data/kmeans_demo.json');
     
-    document.getElementById('kmeansBtnPrevious').addEventListener('click', kmeansPreviousStep);
-    document.getElementById('kmeansBtnNext').addEventListener('click', kmeansNextStep);
     document.getElementById('kmeansBtnReset').addEventListener('click', kmeansResetDemo);
     document.getElementById('kmeansBtnAutoPlay').addEventListener('click', kmeansToggleAutoPlay);
 
@@ -40,7 +45,7 @@ function kmeansRenderStep(stepIndex) {
 
   const progress = ((stepIndex + 1) / kmeansState.demoData.steps.length) * 100;
   document.getElementById('kmeansProgressFill').style.width = progress + '%';
-  document.getElementById('kmeansProgressText').textContent = \\ / \\;
+  document.getElementById('kmeansProgressText').textContent = `${stepIndex + 1} / ${kmeansState.demoData.steps.length}`;
 
   document.getElementById('kmeansBtnPrevious').disabled = stepIndex === 0;
   document.getElementById('kmeansBtnNext').disabled = stepIndex === kmeansState.demoData.steps.length - 1;

@@ -82,6 +82,16 @@ function findBestSplitForFeature(samples, feature) {
 function initTree() {
     let btnIdeal = document.getElementById('btnIdealTree');
     let btnReset = document.getElementById('btnResetTree');
+    
+    // Safety check if DOM is trailing behind the script execution
+    if(!btnIdeal && !btnReset) {
+        let treeCanvas = document.getElementById('treeCanvas');
+        if(!treeCanvas) {
+            setTimeout(initTree, 500);
+            return;
+        }
+    }
+
     if(btnIdeal) btnIdeal.addEventListener('click', treeBuildIdeal);
     if(btnReset) btnReset.addEventListener('click', treeReset);
     
@@ -115,7 +125,7 @@ function treeSetActiveNode(node) {
     tbody.innerHTML = '';
     node.samples.forEach(s => {
         let tr = document.createElement('tr');
-        tr.innerHTML = \<td>\</td><td>$\</td><td>\</td><td><span style="padding: 2px 6px; border-radius: 4px; background: \; color: \;">\</span></td>\;
+        tr.innerHTML = `<td>${Math.round(s.age)}</td><td>$${s.income.toLocaleString()}</td><td>${s.employment_years}</td><td><span style="padding: 2px 6px; border-radius: 4px; background: ${s.label === 1 ? '#dcfce7' : '#fee2e2'}; color: ${s.label === 1 ? '#166534' : '#991b1b'};">${s.label === 1 ? 'Hired' : 'Rejected'}</span></td>`;
         tbody.appendChild(tr);
     });
     
@@ -173,7 +183,7 @@ function treeSetActiveNode(node) {
             if (!splitInfo) {
                 info.textContent = 'Cannot split';
             } else {
-                info.textContent = \Thresh: \ < \ | Gini: \\;
+                info.textContent = `Thresh: ${splitInfo.feature} < ${splitInfo.threshold} | Gini: ${splitInfo.gini.toFixed(4)}`;
                 btnSplit.style.display = 'inline-block';
                 btnCalc.style.display = 'none';
                 
@@ -260,14 +270,14 @@ function treeDrawNodeElements(svg, node) {
     text1.setAttribute('y', node.y - 5);
     text1.setAttribute('text-anchor', 'middle');
     text1.setAttribute('class', 'node-label');
-    text1.textContent = node.feature ? \\ < \\ : "Leaf";
+    text1.textContent = node.feature ? `${node.feature} < ${node.threshold.toFixed(1)}` : "Leaf";
 
     let text2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text2.setAttribute('x', node.x);
     text2.setAttribute('y', node.y + 15);
     text2.setAttribute('text-anchor', 'middle');
     text2.setAttribute('class', 'node-text');
-    text2.textContent = \G: \ | n=\\;
+    text2.textContent = `G: ${node.gini.toFixed(3)} | n=${node.samples.length}`;
     
     g.appendChild(circle);
     g.appendChild(text1);
