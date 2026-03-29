@@ -13,21 +13,33 @@ const KMEANS_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#a855f7', '#
 
 async function initKmeans() {
   try {
-    const btnPrevious = document.getElementById('kmeansBtnPrevious');
-    if (!btnPrevious) {
-      console.warn('kmeans components not found in DOM, waiting 500ms...');
+    const btnInit = document.getElementById('kmeansBtnInit');
+    if (!btnInit) {
       setTimeout(initKmeans, 500);
       return;
     }
-
     kmeansState.demoData = await loadJSON('data/kmeans_demo.json');
-    
-    document.getElementById('kmeansBtnReset').addEventListener('click', kmeansResetDemo);
-    document.getElementById('kmeansBtnAutoPlay').addEventListener('click', kmeansToggleAutoPlay);
-
+    document.getElementById('kmeansBtnInit').addEventListener('click', () => kmeansJumpToPhase('initialize'));
+    document.getElementById('kmeansBtnAssign').addEventListener('click', () => kmeansJumpToPhase('assign'));
+    document.getElementById('kmeansBtnCenter').addEventListener('click', () => kmeansJumpToPhase('update'));
     kmeansRenderStep(0);
   } catch (error) {
     console.error('Failed to initialize K-means demo:', error);
+  }
+}
+
+function kmeansJumpToPhase(targetPhase) {
+  if (!kmeansState.demoData) return;
+  if (targetPhase === 'initialize') { kmeansRenderStep(0); return; }
+  let nextIdx = kmeansState.currentStep + 1;
+  while(nextIdx < kmeansState.demoData.steps.length) {
+    if(kmeansState.demoData.steps[nextIdx].phase === targetPhase) { kmeansRenderStep(nextIdx); return; }
+    nextIdx++;
+  }
+  let wrapIdx = 0;
+  while(wrapIdx <= kmeansState.currentStep && wrapIdx < kmeansState.demoData.steps.length) {
+    if(kmeansState.demoData.steps[wrapIdx].phase === targetPhase) { kmeansRenderStep(wrapIdx); return; }
+    wrapIdx++;
   }
 }
 
@@ -47,13 +59,7 @@ function kmeansRenderStep(stepIndex) {
   document.getElementById('kmeansProgressFill').style.width = progress + '%';
   document.getElementById('kmeansProgressText').textContent = `${stepIndex + 1} / ${kmeansState.demoData.steps.length}`;
 
-  document.getElementById('kmeansBtnPrevious').disabled = stepIndex === 0;
-  document.getElementById('kmeansBtnNext').disabled = stepIndex === kmeansState.demoData.steps.length - 1;
 
-  kmeansDrawVisualization(step);
-}
-
-function kmeansDrawVisualization(step) {
   const canvas = document.getElementById('kmeansCanvas');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -156,3 +162,4 @@ function kmeansStopAutoPlay() {
   let btn = document.getElementById('kmeansBtnAutoPlay');
   if(btn) btn.textContent = 'Auto Play';
 }
+

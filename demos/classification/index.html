@@ -232,6 +232,19 @@
         padding: 1rem;
       }
 
+      .demo-content-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+        align-items: start;
+        margin-bottom: 2rem;
+      }
+      @media (max-width: 900px) {
+        .demo-content-wrapper {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .image-display {
         min-height: 300px;
       }
@@ -373,4 +386,5 @@
   <script src="../../assets/js/classification.js"></script>
 </body>
 </html>
+
 

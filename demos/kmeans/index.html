@@ -11,6 +11,19 @@
       margin: 0 auto;
     }
 
+    .demo-content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 2rem;
+      align-items: start;
+    }
+    
+    @media (max-width: 900px) {
+      .demo-content-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .canvas-wrapper {
       display: flex;
       justify-content: center;
@@ -18,7 +31,7 @@
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 1.5rem;
-      margin-bottom: 2rem;
+      height: fit-content;
     }
 
     canvas {
@@ -26,6 +39,9 @@
       border-radius: 4px;
       background-color: #fafafa;
       cursor: crosshair;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
     }
 
     .controls-section {
@@ -33,7 +49,6 @@
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 1.5rem;
-      margin-bottom: 2rem;
     }
 
     .step-info {
@@ -170,13 +185,14 @@
         points to the nearest center and updating those centers. Follow each step of the algorithm below.
       </p>
 
-      <!-- Visualization -->
-      <div class="canvas-wrapper">
-        <canvas id="kmeansCanvas" width="600" height="600"></canvas>
-      </div>
+      <!-- Visualization and Controls Wrapper -->
+      <div class="demo-content-wrapper">
+        <div class="canvas-wrapper">
+          <canvas id="kmeansCanvas" width="600" height="600"></canvas>
+        </div>
 
-      <!-- Controls -->
-      <div class="controls-section">
+        <!-- Controls -->
+        <div class="controls-section">
         <!-- Step Information -->
         <div class="step-info">
           <div class="step-info-label">Current Step</div>
@@ -195,11 +211,10 @@
         </div>
 
         <!-- Control Buttons -->
-        <div class="button-grid">
-          <button id="kmeansBtnPrevious" class="btn btn-outline">← Previous</button>
-          <button id="kmeansBtnNext" class="btn btn-primary">Next →</button>
-          <button id="kmeansBtnReset" class="btn btn-outline">Reset</button>
-          <button id="kmeansBtnAutoPlay" class="btn btn-secondary">Auto Play</button>
+        <div class="button-grid" style="grid-template-columns: 1fr; gap: 0.75rem;">
+          <button id="kmeansBtnInit" class="btn btn-outline" style="font-weight:bold;">INITIALIZE</button>
+          <button id="kmeansBtnAssign" class="btn btn-primary" style="font-weight:bold;">ASSIGN</button>
+          <button id="kmeansBtnCenter" class="btn btn-secondary" style="font-weight:bold;">CENTER</button>
         </div>
 
         <!-- Statistics -->
@@ -237,9 +252,11 @@
           </div>
         </div>
       </div>
+      
+      </div> <!-- closes demo-content-wrapper -->
 
       <!-- Explanation -->
-      <div class="card">
+      <div class="card" style="margin-top: 2rem;">
         <h3>How K-Means Works</h3>
         <ol style="color: var(--text-secondary); line-height: 1.8;">
           <li><strong>Initialize:</strong> Randomly select K points as initial cluster centers.</li>

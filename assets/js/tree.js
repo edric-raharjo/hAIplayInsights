@@ -119,49 +119,46 @@ function treeReset() {
 function treeSetActiveNode(node) {
     treeState.activeNode = node;
     document.getElementById('treeErrorBox').style.display = 'none';
-    
+
     // Update table
     let tbody = document.getElementById('treeTableBody');
     tbody.innerHTML = '';
     node.samples.forEach(s => {
         let tr = document.createElement('tr');
-        tr.innerHTML = `<td>${Math.round(s.age)}</td><td>$${s.income.toLocaleString()}</td><td>${s.employment_years}</td><td><span style="padding: 2px 6px; border-radius: 4px; background: ${s.label === 1 ? '#dcfce7' : '#fee2e2'}; color: ${s.label === 1 ? '#166534' : '#991b1b'};">${s.label === 1 ? 'Hired' : 'Rejected'}</span></td>`;
+        tr.innerHTML = '<td>' + Math.round(s.age) + 
+                       '</td><td>$' + s.income.toLocaleString() + 
+                       '</td><td>' + s.employment_years + 
+                       '</td><td><span style="padding: 2px 6px; border-radius: 4px; background: ' + (s.label === 1 ? '#dcfce7' : '#fee2e2') + '; color: ' + (s.label === 1 ? '#166534' : '#991b1b') + ';">' + (s.label === 1 ? 'Hired' : 'Rejected') + '</span></td>';
         tbody.appendChild(tr);
     });
-    
+
     document.getElementById('treeNodeSamplesCount').textContent = node.samples.length;
     document.getElementById('treeTargetGini').textContent = node.gini.toFixed(4);
+
+    treeState.features.forEach(f => {
+        let container = document.getElementById('actions_' + f);
+        if(container) container.innerHTML = '';
+    });
     
-    let featuresContainer = document.getElementById('treeFeaturesContainer');
-    featuresContainer.innerHTML = '';
-    
+    let statusMsg = document.getElementById('treeNodeStatusMsg');
+    if(statusMsg) statusMsg.innerHTML = '';
+
     if (node.gini === 0 || node.samples.length < 2) {
-        featuresContainer.innerHTML = '<p style="color: #059669; font-weight: bold;">? Node is pure. No further splits needed.</p>';
+        if(statusMsg) statusMsg.innerHTML = '<span style="color: #059669;">&#10004; Node is pure. No further splits needed.</span>';
         return;
     }
     if (node.left || node.right) {
-        featuresContainer.innerHTML = '<p style="color: #6b7280; font-style: italic;">Node already split. Select a leaf node to continue.</p>';
+        if(statusMsg) statusMsg.innerHTML = '<span style="color: #6b7280; font-style: italic;">Node already split. Select a leaf node to continue.</span>';
         return;
     }
 
-    const featureNames = { age: 'Age', income: 'Income', employment_years: 'Emp. Yrs' };
-    
     treeState.features.forEach(f => {
-        let row = document.createElement('div');
-        row.className = 'feature-row';
+        let actContainer = document.getElementById('actions_' + f);
+        if(!actContainer) return;
         
-        let label = document.createElement('span');
-        label.style.fontWeight = 'bold';
-        label.textContent = featureNames[f];
-        
-        let actions = document.createElement('div');
-        actions.style.display = 'flex';
-        actions.style.gap = '0.5rem';
-        actions.style.alignItems = 'center';
-        
-        let info = document.createElement('span');
-        info.style.fontSize = '0.85rem';
-        info.style.color = '#4b5563';
+        let info = document.createElement('div');
+        info.className = 'split-info-text';
+        info.style.textAlign = 'center';
         
         let btnCalc = document.createElement('button');
         btnCalc.className = 'feature-calc-btn';
@@ -171,19 +168,16 @@ function treeSetActiveNode(node) {
         btnSplit.className = 'feature-split-btn';
         btnSplit.textContent = 'Split Here!';
         
-        row.appendChild(label);
-        actions.appendChild(info);
-        actions.appendChild(btnCalc);
-        actions.appendChild(btnSplit);
-        row.appendChild(actions);
-        featuresContainer.appendChild(row);
+        actContainer.appendChild(btnCalc);
+        actContainer.appendChild(btnSplit);
+        actContainer.appendChild(info);
         
         btnCalc.addEventListener('click', () => {
             let splitInfo = findBestSplitForFeature(node.samples, f);
             if (!splitInfo) {
                 info.textContent = 'Cannot split';
             } else {
-                info.textContent = `Thresh: ${splitInfo.feature} < ${splitInfo.threshold} | Gini: ${splitInfo.gini.toFixed(4)}`;
+                info.innerHTML = '<div style="margin-top:2px;">Thresh: &lt; ' + splitInfo.threshold + '</div><div>Gini: ' + splitInfo.gini.toFixed(4) + '</div>';
                 btnSplit.style.display = 'inline-block';
                 btnCalc.style.display = 'none';
                 
@@ -312,3 +306,4 @@ function treeBuildIdeal() {
     treeRenderViz();
     treeSetActiveNode(treeState.root);
 }
+

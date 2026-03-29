@@ -17,7 +17,9 @@ async function initClassification() {
       return;
     }
 
-    
+    classificationState.demoData = await loadJSON('data/classification_demo.json');
+    classificationState.userLabels = new Array(classificationState.demoData.session.length).fill(null);
+
     document.getElementById('btnBall').addEventListener('click', () => classificationLabelImage(1));
     document.getElementById('btnNotBall').addEventListener('click', () => classificationLabelImage(0));
     document.getElementById('btnSubmit').addEventListener('click', classificationSubmitAnswers);
