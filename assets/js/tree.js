@@ -209,14 +209,14 @@ function treeCalculateLayout(node, x, y, dx) {
     if (!node) return;
     node.x = x;
     node.y = y;
-    if (node.left) treeCalculateLayout(node.left, x - dx, y + 100, dx * 0.55);
-    if (node.right) treeCalculateLayout(node.right, x + dx, y + 100, dx * 0.55);
+    if (node.left) treeCalculateLayout(node.left, x - dx, y + 100, dx * 0.5);  
+    if (node.right) treeCalculateLayout(node.right, x + dx, y + 100, dx * 0.5);
 }
 
 function treeRenderViz() {
     let svg = document.getElementById('treeCanvas');
     svg.innerHTML = '';
-    treeCalculateLayout(treeState.root, 500, 50, 240);
+    treeCalculateLayout(treeState.root, 500, 50, 450);
     treeDrawNodeConnections(svg, treeState.root);
     treeDrawNodeElements(svg, treeState.root);
 }
