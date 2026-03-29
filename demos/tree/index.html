@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Tree with Gini Impurity Demo</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .demo-section {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .tree-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .tree-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tree-panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .gini-display {
+      background-color: var(--bg-color);
+      border-left: 4px solid var(--primary-color);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .gini-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .gini-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      font-family: 'Courier New', monospace;
+    }
+
+    .dataset-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-box {
+      background-color: var(--bg-color);
+      padding: 0.75rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-top: 0.25rem;
+    }
+
+    .dataset-table {
+      width: 100%;
+      font-size: 0.85rem;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+      display: block;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+
+    .dataset-table thead {
+      background-color: var(--bg-color);
+      position: sticky;
+      top: 0;
+    }
+
+    .dataset-table th,
+    .dataset-table td {
+      padding: 0.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dataset-table th {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .dataset-table tr:hover {
+      background-color: var(--bg-color);
+    }
+
+    .approved-1 {
+      color: var(--secondary-color);
+      font-weight: 600;
+    }
+
+    .approved-0 {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+
+    .splits-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .split-option {
+      background-color: var(--bg-color);
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .split-option:hover {
+      border-color: var(--primary-color);
+      background-color: #f0f9ff;
+    }
+
+    .split-option.best {
+      border-color: var(--secondary-color);
+      background-color: #f0fdf4;
+    }
+
+    .split-option.best::before {
+      content: "★ OPTIMAL";
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+
+    .split-text {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .split-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .split-metric {
+      background-color: var(--card-bg);
+      padding: 0.5rem;
+      border-radius: 3px;
+      text-align: center;
+    }
+
+    .split-metric-label {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+
+    .split-metric-value {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 0.95rem;
+    }
+
+    .hint-button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .tree-viz {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .tree-node {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tree-node circle {
+      stroke-width: 2;
+      transition: all 0.2s ease;
+    }
+
+    .tree-node:hover circle {
+      filter: brightness(0.9);
+    }
+
+    .tree-node text {
+      font-size: 12px;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    .tree-edge {
+      stroke: var(--border-color);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .reset-button {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .stats-summary {
+      background-color: #f0fdf4;
+      border: 1px solid var(--secondary-color);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .stats-summary h4 {
+      color: var(--secondary-color);
+      margin-bottom: 0.75rem;
+    }
+
+    .stats-summary p {
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">📊 DS Algorithms</div>
+      <nav>
+        <a href="../../index.html">Home</a>
+        <a href="../../index.html#home">Demos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container demo-section">
+      <h1>Decision Tree with Gini Impurity</h1>
+      <p>
+        Learn how decision trees use Gini impurity to find the best feature to split on. 
+        The lower the Gini value, the more "pure" the split (less mixed classes). 
+        Choose splits to build your tree, or let us hint at the optimal split!
+      </p>
+
+      <!-- Main Layout -->
+      <div class="tree-layout">
+        <!-- Left Panel: Dataset & Splits -->
+        <div>
+          <!-- Current Node Info -->
+          <div class="tree-panel">
+            <div class="panel-title">Current Node</div>
+            
+            <!-- Gini Display -->
+            <div class="gini-display">
+              <div class="gini-label">Gini Impurity</div>
+              <div class="gini-value" id="currentGini">0.4911</div>
+            </div>
+
+            <!-- Dataset Info Cards -->
+            <div class="dataset-info">
+              <div class="info-box">
+                <div class="info-label">Samples</div>
+                <div class="info-value" id="sampleCount">30</div>
+              </div>
+              <div class="info-box">
+                <div class="info-label">Approved</div>
+                <div class="info-value" id="approvedCount">17</div>
+              </div>
+              <div class="info-box">
+                <div class="info-label">Not Approved</div>
+                <div class="info-value" id="notApprovedCount">13</div>
+              </div>
+              <div class="info-box">
+                <div class="info-label">Purity</div>
+                <div class="info-value" id="purityPercent">51%</div>
+              </div>
+            </div>
+
+            <!-- Dataset Table -->
+            <div style="font-size: 0.85rem; margin-bottom: 1rem;">
+              <strong>Sample Data:</strong>
+            </div>
+            <table class="dataset-table">
+              <thead>
+                <tr>
+                  <th>Age</th>
+                  <th>Income</th>
+                  <th>Emp. Yrs</th>
+                  <th>Approved</th>
+                </tr>
+              </thead>
+              <tbody id="datasetTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Split Options -->
+          <div class="tree-panel">
+            <div class="panel-title">Available Splits</div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Click a split to apply it. Pure splits have lower Gini values.
+            </p>
+            
+            <div class="splits-container" id="splitsContainer">
+              <!-- Populated by JS -->
+            </div>
+
+            <button id="btnShowHint" class="btn btn-outline hint-button">
+              💡 Show Optimal Split Hint
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Tree Visualization -->
+        <div>
+          <div class="tree-panel">
+            <div class="panel-title">Tree Visualization</div>
+            <div class="tree-viz" id="treeViz">
+              <svg id="treeSvg" width="100%" height="500">
+                <!-- Tree will be drawn here -->
+              </svg>
+            </div>
+            
+            <button id="btnReset" class="btn btn-outline reset-button">
+              🔄 Reset Tree
+            </button>
+
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+              <h4>📈 Tree Stats</h4>
+              <p><strong>Current Depth:</strong> <span id="treeDepth">0</span></p>
+              <p><strong>Nodes Created:</strong> <span id="nodeCount">1</span></p>
+              <p><strong>Avg Gini at Leaves:</strong> <span id="avgLeafGini">0.4911</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div class="card" style="margin-top: 2rem;">
+        <h3>Understanding Gini Impurity</h3>
+        <p>
+          <strong>Gini Impurity</strong> measures how mixed classes are in a dataset node:
+        </p>
+        <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem; margin-bottom: 1rem;">
+          <li><strong>Gini = 0:</strong> Perfect purity (all samples are one class)</li>
+          <li><strong>Gini = 0.5:</strong> Maximum impurity (50/50 split for 2 classes)</li>
+          <li><strong>Formula:</strong> Gini = 1 − Σ(p<sub>i</sub>)<sup>2</sup>, where p<sub>i</sub> = proportion of class i</li>
+        </ul>
+        <p>
+          <strong>Information Gain</strong> = Parent Gini − Weighted Child Gini. A good split has high information gain (low child Gini).
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Data Science Algorithm Demonstrations. Educational tool.</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/common.js"></script>
+  <script src="../../assets/js/tree.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-Means Clustering Demo</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .demo-section {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .canvas-wrapper {
+      display: flex;
+      justify-content: center;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    canvas {
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: #fafafa;
+      cursor: crosshair;
+    }
+
+    .controls-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .step-info {
+      background-color: var(--bg-color);
+      border-left: 4px solid var(--primary-color);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+    }
+
+    .step-info-label {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-info-text {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      height: 8px;
+      background-color: var(--border-color);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .button-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-color {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+    }
+
+    .legend-color.center {
+      border: 3px solid #333;
+      box-shadow: inset 0 0 0 2px white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-box {
+      background-color: var(--bg-color);
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">📊 DS Algorithms</div>
+      <nav>
+        <a href="../../index.html">Home</a>
+        <a href="../../index.html#home">Demos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container demo-section">
+      <h1>K-Means Clustering</h1>
+      <p>
+        K-Means is a popular clustering algorithm that groups data points into K clusters by iteratively assigning 
+        points to the nearest center and updating those centers. Follow each step of the algorithm below.
+      </p>
+
+      <!-- Visualization -->
+      <div class="canvas-wrapper">
+        <canvas id="canvas" width="600" height="600"></canvas>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-section">
+        <!-- Step Information -->
+        <div class="step-info">
+          <div class="step-info-label">Current Step</div>
+          <div class="step-info-text" id="stepDescription">Initializing...</div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-bar">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressText">0 / 0</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="button-grid">
+          <button id="btnPrevious" class="btn btn-outline">← Previous</button>
+          <button id="btnNext" class="btn btn-primary">Next →</button>
+          <button id="btnReset" class="btn btn-outline">Reset</button>
+          <button id="btnAutoPlay" class="btn btn-secondary">Auto Play</button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Data Points</div>
+            <div class="stat-value" id="statPoints">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Clusters</div>
+            <div class="stat-value" id="statClusters">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Iteration</div>
+            <div class="stat-value" id="statIteration">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Phase</div>
+            <div class="stat-value" id="statPhase" style="font-size: 1rem; text-transform: capitalize;">-</div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #e5e7eb;"></div>
+            <span>Data Points</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color center" style="background-color: #2563eb;"></div>
+            <span>Cluster Centers</span>
+          </div>
+          <div class="legend-item">
+            <span style="color: var(--text-secondary); font-size: 0.9rem;">Color indicates cluster assignment</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div class="card">
+        <h3>How K-Means Works</h3>
+        <ol style="color: var(--text-secondary); line-height: 1.8;">
+          <li><strong>Initialize:</strong> Randomly select K points as initial cluster centers.</li>
+          <li><strong>Assign:</strong> Assign each data point to the nearest cluster center.</li>
+          <li><strong>Update:</strong> Recalculate cluster centers as the mean of assigned points.</li>
+          <li><strong>Repeat:</strong> Steps 2-3 until centers stop moving (convergence).</li>
+        </ol>
+        <p style="margin-top: 1.5rem; color: var(--text-secondary);">
+          Click "Next" to advance through the algorithm step-by-step, or use "Auto Play" to watch it run automatically.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Data Science Algorithm Demonstrations. Educational tool.</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/common.js"></script>
+  <script src="../../assets/js/kmeans.js"></script>
+</body>
+</html>

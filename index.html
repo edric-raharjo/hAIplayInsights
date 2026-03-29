@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Science Algorithm Demonstrations</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">📊 DS Algorithms</div>
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section id="home">
+        <h1>Interactive Data Science Algorithm Demonstrations</h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+          Learn how fundamental machine learning algorithms work through interactive demonstrations. 
+          Each module lets you step through the algorithm stage-by-stage to understand the mechanics.
+        </p>
+
+        <div class="demo-grid">
+          <!-- K-means Clustering -->
+          <div class="card demo-card">
+            <div class="demo-icon">📍</div>
+            <h3>K-Means Clustering</h3>
+            <p>
+              Discover how K-means iteratively assigns data points to clusters and updates cluster centers. 
+              Follow each step: initialize centers, assign points, update centers.
+            </p>
+            <a href="demos/kmeans/index.html" class="btn btn-primary">Open Demo</a>
+          </div>
+
+          <!-- Classification -->
+          <div class="card demo-card">
+            <div class="demo-icon">🎯</div>
+            <h3>Classification Training</h3>
+            <p>
+              Label images to learn feature selection. Classify objects as "bomb" or "not bomb" 
+              and see your accuracy compared to ground truth.
+            </p>
+            <a href="demos/classification/index.html" class="btn btn-primary">Open Demo</a>
+          </div>
+
+          <!-- Decision Tree -->
+          <div class="card demo-card">
+            <div class="demo-icon">🌳</div>
+            <h3>Decision Tree with Gini Impurity</h3>
+            <p>
+              Understand Gini impurity and how to choose the best feature splits for decision trees. 
+              Build trees interactively and learn why certain splits are optimal.
+            </p>
+            <a href="demos/tree/index.html" class="btn btn-primary">Open Demo</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" style="margin-top: 4rem;">
+        <h2>How These Demos Work</h2>
+        <div class="card" style="max-width: 800px;">
+          <p>
+            <strong>Educational Focus:</strong><br>
+            Each demonstration is designed to teach you the mechanics of fundamental ML algorithms. 
+            Rather than just seeing results, you control the algorithm's progression step-by-step.
+          </p>
+          <p style="margin-top: 1rem;">
+            <strong>Interactivity:</strong><br>
+            Click buttons to advance through algorithm stages, label training data, or choose splitting criteria. 
+            This hands-on approach helps cement understanding.
+          </p>
+          <p style="margin-top: 1rem;">
+            <strong>Quick Start:</strong><br>
+            Click any demo card above to begin. No setup required — everything runs in your browser!
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Data Science Algorithm Demonstrations. Educational tool.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,286 @@
+{
+  "metadata": {
+    "algorithm": "Decision Tree with Gini Impurity",
+    "task": "Predict loan approval based on age, income, and employment years",
+    "total_samples": 30,
+    "features": [
+      "age",
+      "income",
+      "employment_years"
+    ],
+    "target": "approved"
+  },
+  "initial_state": {
+    "dataset": [
+      {
+        "age": 60,
+        "income": 34592,
+        "employment_years": 1,
+        "approved": 0
+      },
+      {
+        "age": 35,
+        "income": 49256,
+        "employment_years": 8,
+        "approved": 0
+      },
+      {
+        "age": 63,
+        "income": 117080,
+        "employment_years": 34,
+        "approved": 0
+      },
+      {
+        "age": 47,
+        "income": 24165,
+        "employment_years": 1,
+        "approved": 1
+      },
+      {
+        "age": 34,
+        "income": 86237,
+        "employment_years": 38,
+        "approved": 0
+      },
+      {
+        "age": 32,
+        "income": 113850,
+        "employment_years": 34,
+        "approved": 1
+      },
+      {
+        "age": 48,
+        "income": 97236,
+        "employment_years": 17,
+        "approved": 1
+      },
+      {
+        "age": 20,
+        "income": 119458,
+        "employment_years": 10,
+        "approved": 1
+      },
+      {
+        "age": 41,
+        "income": 56421,
+        "employment_years": 9,
+        "approved": 1
+      },
+      {
+        "age": 68,
+        "income": 64118,
+        "employment_years": 6,
+        "approved": 0
+      },
+      {
+        "age": 26,
+        "income": 67052,
+        "employment_years": 22,
+        "approved": 1
+      },
+      {
+        "age": 22,
+        "income": 115647,
+        "employment_years": 29,
+        "approved": 1
+      },
+      {
+        "age": 44,
+        "income": 30328,
+        "employment_years": 35,
+        "approved": 0
+      },
+      {
+        "age": 60,
+        "income": 101070,
+        "employment_years": 23,
+        "approved": 1
+      },
+      {
+        "age": 65,
+        "income": 29116,
+        "employment_years": 2,
+        "approved": 0
+      },
+      {
+        "age": 69,
+        "income": 57930,
+        "employment_years": 5,
+        "approved": 1
+      },
+      {
+        "age": 26,
+        "income": 69823,
+        "employment_years": 17,
+        "approved": 1
+      },
+      {
+        "age": 43,
+        "income": 41319,
+        "employment_years": 23,
+        "approved": 0
+      },
+      {
+        "age": 62,
+        "income": 54993,
+        "employment_years": 4,
+        "approved": 1
+      },
+      {
+        "age": 30,
+        "income": 90010,
+        "employment_years": 15,
+        "approved": 0
+      },
+      {
+        "age": 44,
+        "income": 55382,
+        "employment_years": 40,
+        "approved": 1
+      },
+      {
+        "age": 34,
+        "income": 109733,
+        "employment_years": 20,
+        "approved": 1
+      },
+      {
+        "age": 69,
+        "income": 27331,
+        "employment_years": 14,
+        "approved": 0
+      },
+      {
+        "age": 40,
+        "income": 72581,
+        "employment_years": 17,
+        "approved": 0
+      },
+      {
+        "age": 56,
+        "income": 134867,
+        "employment_years": 20,
+        "approved": 1
+      },
+      {
+        "age": 51,
+        "income": 71856,
+        "employment_years": 29,
+        "approved": 0
+      },
+      {
+        "age": 28,
+        "income": 52325,
+        "employment_years": 35,
+        "approved": 1
+      },
+      {
+        "age": 67,
+        "income": 96622,
+        "employment_years": 27,
+        "approved": 1
+      },
+      {
+        "age": 45,
+        "income": 67447,
+        "employment_years": 14,
+        "approved": 1
+      },
+      {
+        "age": 28,
+        "income": 86784,
+        "employment_years": 31,
+        "approved": 0
+      }
+    ],
+    "labels": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    "gini": 0.4911,
+    "class_distribution": {
+      "approved": 17,
+      "not_approved": 13
+    }
+  },
+  "all_splits": {
+    "age": {
+      "feature": "age",
+      "threshold": 27.0,
+      "gini_after_split": 0.4333,
+      "information_gain": 0.0578,
+      "left_samples": 4,
+      "right_samples": 26
+    },
+    "income": {
+      "feature": "income",
+      "threshold": 50790.5,
+      "gini_after_split": 0.3818,
+      "information_gain": 0.1093,
+      "left_samples": 7,
+      "right_samples": 23
+    },
+    "employment_years": {
+      "feature": "employment_years",
+      "threshold": 39.0,
+      "gini_after_split": 0.4781,
+      "information_gain": 0.013,
+      "left_samples": 29,
+      "right_samples": 1
+    }
+  },
+  "split_options": [
+    {
+      "id": 0,
+      "feature": "age",
+      "threshold": 27.0,
+      "gini": 0.4333,
+      "information_gain": 0.0578,
+      "description": "Age \u2264 27.0"
+    },
+    {
+      "id": 1,
+      "feature": "income",
+      "threshold": 50790.5,
+      "gini": 0.3818,
+      "information_gain": 0.1093,
+      "description": "Income \u2264 50790.5"
+    },
+    {
+      "id": 2,
+      "feature": "employment_years",
+      "threshold": 39.0,
+      "gini": 0.4781,
+      "information_gain": 0.013,
+      "description": "Employment Years \u2264 39.0"
+    }
+  ]
+}
