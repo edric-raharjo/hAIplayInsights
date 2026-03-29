@@ -109,13 +109,6 @@ function classificationShowImage(index) {
 
   imageDisplay.appendChild(slideContainer);
 
-  const progressText = document.createElement('p');
-  progressText.textContent = `Slide ${index + 1} / ${classificationState.demoData.session.length}`;
-  progressText.style.marginTop = '12px';
-  progressText.style.color = '#6b7280';
-  progressText.style.fontSize = '14px';
-  imageDisplay.appendChild(progressText);
-
   // Check how many labels
   const labeledCount = classificationState.userLabels.filter(l => l !== null).length;
   
