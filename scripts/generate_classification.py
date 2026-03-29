@@ -45,10 +45,10 @@ def generate_classification_demo(output_dir='data'):
             'image_path': img_data['filename'],
             'image_dir': 'bombs' if img_data['label'] == 1 else 'non_bombs',
             'ground_truth': img_data['label'],  # 1=bomb, 0=not bomb
-            'labeled': False,
-            'student_label': None
+            'emoji': '💣' if img_data['label'] == 1 else random.choice(['🍎', '⚽', '🎱', '🏀', '🍉', '🎳']),
+            'story_text': f"Officer Doggo sniffed bag #{idx + 1}... Could this be dangerous?"
         })
-    
+
     # Create demo configuration
     demo = {
         'metadata': {

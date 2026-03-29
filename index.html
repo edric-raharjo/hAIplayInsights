@@ -1,10 +1,140 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Science Algorithm Demonstrations</title>
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* Global styles for the assembled demo sections */
+    .demo-section {
+      margin: 4rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-color);
+    }
+    .demo-section:first-of-type {
+      border-top: none;
+      margin-top: 2rem;
+    }
+    .demo-section h2 {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .demo-icon-header {
+      font-size: 1.8rem;
+    }
+    
+    /* Layouts */
+    .kmeans-layout, .classification-layout, .tree-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 1024px) {
+      .kmeans-layout, .classification-layout, .tree-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Display containers */
+    .kmeans-canvas-wrapper, .classification-image-display, .tree-viz-container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .kmeans-canvas-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .kmeans-canvas-wrapper canvas {
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: #fafafa;
+      max-width: 100%;
+      object-fit: contain;
+      aspect-ratio: 1 / 1;
+    }
+    
+    .classification-image-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+    .classification-image-display img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .tree-viz-container {
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tree-viz-container svg {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    /* Controls and Panels */
+    .kmeans-controls, .classification-controls, .tree-controls-container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .demo-panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    
+    /* Classification Specific */
+    .classification-button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .classification-button-group button {
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
+    .results-container {
+      display: none;
+      background-color: var(--bg-color);
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .results-container.show {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -12,7 +142,9 @@
       <div class="logo">📊 DS Algorithms</div>
       <nav>
         <a href="#home">Home</a>
-        <a href="#about">About</a>
+        <a href="#kmeans">K-Means</a>
+        <a href="#classification">Classification</a>
+        <a href="#tree">Decision Tree</a>
       </nav>
     </div>
   </header>
@@ -23,64 +155,18 @@
         <h1>Interactive Data Science Algorithm Demonstrations</h1>
         <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
           Learn how fundamental machine learning algorithms work through interactive demonstrations. 
-          Each module lets you step through the algorithm stage-by-stage to understand the mechanics.
+          Explore each module below, or use the navigation above to jump to any demo!
         </p>
-
-        <div class="demo-grid">
-          <!-- K-means Clustering -->
-          <div class="card demo-card">
-            <div class="demo-icon">📍</div>
-            <h3>K-Means Clustering</h3>
-            <p>
-              Discover how K-means iteratively assigns data points to clusters and updates cluster centers. 
-              Follow each step: initialize centers, assign points, update centers.
-            </p>
-            <a href="demos/kmeans/index.html" class="btn btn-primary">Open Demo</a>
-          </div>
-
-          <!-- Classification -->
-          <div class="card demo-card">
-            <div class="demo-icon">🎯</div>
-            <h3>Classification Training</h3>
-            <p>
-              Label images to learn feature selection. Classify objects as "bomb" or "not bomb" 
-              and see your accuracy compared to ground truth.
-            </p>
-            <a href="demos/classification/index.html" class="btn btn-primary">Open Demo</a>
-          </div>
-
-          <!-- Decision Tree -->
-          <div class="card demo-card">
-            <div class="demo-icon">🌳</div>
-            <h3>Decision Tree with Gini Impurity</h3>
-            <p>
-              Understand Gini impurity and how to choose the best feature splits for decision trees. 
-              Build trees interactively and learn why certain splits are optimal.
-            </p>
-            <a href="demos/tree/index.html" class="btn btn-primary">Open Demo</a>
-          </div>
+        <div class="card" style="background-color: #eff6ff; border-color: var(--primary-color); border-left: 4px solid var(--primary-color);">
+          <p><strong>🎓 Educational Focus:</strong> Each demonstration lets you control the algorithm's progression step-by-step to understand the mechanics. Click buttons to advance, label data, or choose parameters interactively.</p>
         </div>
       </section>
 
-      <section id="about" style="margin-top: 4rem;">
-        <h2>How These Demos Work</h2>
-        <div class="card" style="max-width: 800px;">
-          <p>
-            <strong>Educational Focus:</strong><br>
-            Each demonstration is designed to teach you the mechanics of fundamental ML algorithms. 
-            Rather than just seeing results, you control the algorithm's progression step-by-step.
-          </p>
-          <p style="margin-top: 1rem;">
-            <strong>Interactivity:</strong><br>
-            Click buttons to advance through algorithm stages, label training data, or choose splitting criteria. 
-            This hands-on approach helps cement understanding.
-          </p>
-          <p style="margin-top: 1rem;">
-            <strong>Quick Start:</strong><br>
-            Click any demo card above to begin. No setup required — everything runs in your browser!
-          </p>
-        </div>
-      </section>
+      <!-- Modular demo sections will be injected here -->
+      <div id="kmeans-module"></div>
+      <div id="classification-module"></div>
+      <div id="tree-module"></div>
+
     </div>
   </main>
 
@@ -89,5 +175,68 @@
       <p>&copy; 2024 Data Science Algorithm Demonstrations. Educational tool.</p>
     </div>
   </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/kmeans.js"></script>
+  <script src="assets/js/classification.js"></script>
+  <script src="assets/js/tree.js"></script>
+  
+  <script>
+    /**
+     * Dynamically loads a demo component from its dedicated folder
+     */
+    async function loadDemoComponent(targetId, url, sectionId, sectionTitle, icon) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch");
+        const html = await response.text();
+        
+        // Parse the fetched HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Find the main demo container in the fetched file
+        const container = doc.querySelector('.container.demo-section');
+        if (container) {
+          // Customize the section structure slightly to match the single-page layout
+          const section = document.createElement('section');
+          section.id = sectionId;
+          section.className = 'demo-section';
+          
+          // Replace <h1> with standard <h2> header for all-in-home layout
+          const h1 = container.querySelector('h1');
+          if (h1) {
+             const h2 = document.createElement('h2');
+             h2.innerHTML = '<span class="demo-icon-header">' + icon + '</span> ' + sectionTitle;
+             container.replaceChild(h2, h1);
+          }
+
+          // Remove standalone "Open Demo" or routing buttons if they exist
+          const leftoverBtns = container.querySelectorAll('button[onclick*="location.href"]');
+          leftoverBtns.forEach(btn => btn.remove());
+          
+          section.innerHTML = container.innerHTML;
+          document.getElementById(targetId).appendChild(section);
+        }
+      } catch (err) {
+        console.error("Error loading demo component from " + url, err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Fetch and inject HTML modularly
+      await Promise.all([
+        loadDemoComponent('kmeans-module', 'demos/kmeans/index.html', 'kmeans', 'K-Means Clustering', '📍'),
+        loadDemoComponent('classification-module', 'demos/classification/index.html', 'classification', 'Classification Training', '🎯'),
+        loadDemoComponent('tree-module', 'demos/tree/index.html', 'tree', 'Decision Tree with Gini Impurity', '🌳')
+      ]);
+
+      // 2. Initialize corresponding JavaScript components
+      if (typeof initKmeans === 'function') initKmeans();
+      if (typeof initClassification === 'function') initClassification();
+      if (typeof initTree === 'function') initTree();
+    });
+  </script>
 </body>
 </html>

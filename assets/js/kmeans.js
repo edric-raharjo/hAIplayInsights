@@ -1,73 +1,67 @@
 /**
- * K-Means Clustering Interactive Demo
+ * K-Means Clustering Interactive Demo (Embedded version)
  */
 
-let demoData = null;
-let currentStep = 0;
-let isAutoPlaying = false;
-let autoPlayInterval = null;
+let kmeansState = {
+  demoData: null,
+  currentStep: 0,
+  isAutoPlaying: false,
+  autoPlayInterval: null
+};
 
-const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#a855f7', '#ec4899', '#6366f1', '#14b8a6'];
+const KMEANS_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#a855f7', '#ec4899', '#6366f1', '#14b8a6'];
 
-async function init() {
+async function initKmeans() {
   try {
-    // Load demo data
-    demoData = await loadJSON('../../data/kmeans_demo.json');
+    kmeansState.demoData = await loadJSON('data/kmeans_demo.json');
     
-    // Set up event listeners
-    document.getElementById('btnNext').addEventListener('click', nextStep);
-    document.getElementById('btnPrevious').addEventListener('click', previousStep);
-    document.getElementById('btnReset').addEventListener('click', resetDemo);
-    document.getElementById('btnAutoPlay').addEventListener('click', toggleAutoPlay);
+    document.getElementById('kmeansBtnInitial').addEventListener('click', kmeansGoInitial);
+    document.getElementById('kmeansBtnAssign').addEventListener('click', () => kmeansAdvanceToPhase('assign'));
+    document.getElementById('kmeansBtnCenter').addEventListener('click', () => kmeansAdvanceToPhase('update'));
+    document.getElementById('kmeansButtonReset').addEventListener('click', kmeansResetDemo);
+    document.getElementById('kmeansButtonAutoPlay').addEventListener('click', kmeansToggleAutoPlay);
     
-    // Initial render
-    renderStep(0);
+    kmeansRenderStep(0);
   } catch (error) {
-    console.error('Failed to initialize demo:', error);
-    alert('Failed to load demo data. Please check the console.');
+    console.error('Failed to initialize K-means demo:', error);
   }
 }
 
-function renderStep(stepIndex) {
-  if (!demoData || stepIndex < 0 || stepIndex >= demoData.steps.length) {
+function kmeansRenderStep(stepIndex) {
+  if (!kmeansState.demoData || stepIndex < 0 || stepIndex >= kmeansState.demoData.steps.length) {
     return;
   }
   
-  currentStep = stepIndex;
-  const step = demoData.steps[stepIndex];
+  kmeansState.currentStep = stepIndex;
+  const step = kmeansState.demoData.steps[stepIndex];
   
-  // Update UI elements
-  document.getElementById('stepDescription').textContent = step.description;
-  document.getElementById('statPoints').textContent = step.points.length;
-  document.getElementById('statClusters').textContent = demoData.metadata.k;
-  document.getElementById('statIteration').textContent = step.iteration;
-  document.getElementById('statPhase').textContent = step.phase;
+  document.getElementById('kmeansStepDescription').textContent = step.description;
+  document.getElementById('kmeansStatPoints').textContent = step.points.length;
+  document.getElementById('kmeansStatClusters').textContent = kmeansState.demoData.metadata.k;
+  document.getElementById('kmeansStatIteration').textContent = step.iteration;
+  document.getElementById('kmeansStatPhase').textContent = step.phase;
   
-  // Update progress
-  const progress = ((stepIndex + 1) / demoData.steps.length) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
-  document.getElementById('progressText').textContent = `${stepIndex + 1} / ${demoData.steps.length}`;
+  const progress = ((stepIndex + 1) / kmeansState.demoData.steps.length) * 100;
+  document.getElementById('kmeansProgressFill').style.width = progress + '%';
+  document.getElementById('kmeansProgressText').textContent = `${stepIndex + 1} / ${kmeansState.demoData.steps.length}`;
   
-  // Update button states
-  document.getElementById('btnPrevious').disabled = stepIndex === 0;
-  document.getElementById('btnNext').disabled = stepIndex === demoData.steps.length - 1;
+  document.getElementById('kmeansBtnInitial').disabled = stepIndex === 0;
+  document.getElementById('kmeansBtnAssign').disabled = kmeansState.demoData.steps.findIndex((s, i) => i > stepIndex && s.phase === 'assign') === -1;
+  document.getElementById('kmeansBtnCenter').disabled = kmeansState.demoData.steps.findIndex((s, i) => i > stepIndex && s.phase === 'update') === -1;
   
-  // Render canvas
-  drawVisualization(step);
+  kmeansDrawVisualization(step);
 }
 
-function drawVisualization(step) {
-  const canvas = document.getElementById('canvas');
+function kmeansDrawVisualization(step) {
+  const canvas = document.getElementById('canvasKmeans');
   const ctx = canvas.getContext('2d');
   const padding = 50;
   const width = canvas.width - 2 * padding;
   const height = canvas.height - 2 * padding;
   
-  // Clear canvas
   ctx.fillStyle = '#fafafa';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Draw grid
   ctx.strokeStyle = '#e5e7eb';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 10; i++) {
@@ -83,7 +77,6 @@ function drawVisualization(step) {
     ctx.stroke();
   }
   
-  // Draw axes
   ctx.strokeStyle = '#1f2937';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -95,57 +88,47 @@ function drawVisualization(step) {
   ctx.lineTo(padding, canvas.height - padding);
   ctx.stroke();
   
-  // Helper to convert data coordinates to canvas coordinates
   const toCanvasX = (x) => padding + (x / 100) * width;
   const toCanvasY = (y) => canvas.height - padding - (y / 100) * height;
   
-  // Draw data points
   step.points.forEach((point, idx) => {
     const canvasX = toCanvasX(point[0]);
     const canvasY = toCanvasY(point[1]);
     
-    // Get cluster color if point is assigned
     let color = '#d1d5db';
     if (step.assignments[idx] !== null && step.assignments[idx] !== undefined) {
-      color = COLORS[step.assignments[idx] % COLORS.length];
+      color = KMEANS_COLORS[step.assignments[idx] % KMEANS_COLORS.length];
     }
     
-    // Draw point
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Draw point border
     ctx.strokeStyle = '#6b7280';
     ctx.lineWidth = 1;
     ctx.stroke();
   });
   
-  // Draw centers
   step.centers.forEach((center, idx) => {
     const canvasX = toCanvasX(center[0]);
     const canvasY = toCanvasY(center[1]);
     
-    // Draw center as a larger circle with special marking
-    ctx.fillStyle = COLORS[idx % COLORS.length];
+    ctx.fillStyle = KMEANS_COLORS[idx % KMEANS_COLORS.length];
     ctx.beginPath();
     ctx.arc(canvasX, canvasY, 8, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Draw center border
     ctx.strokeStyle = '#1f2937';
     ctx.lineWidth = 3;
     ctx.stroke();
     
-    // Draw inner circle
     ctx.fillStyle = 'white';
     ctx.beginPath();
     ctx.arc(canvasX, canvasY, 3, 0, 2 * Math.PI);
     ctx.fill();
   });
   
-  // Draw labels
   ctx.fillStyle = '#6b7280';
   ctx.font = '12px sans-serif';
   ctx.textAlign = 'right';
@@ -158,54 +141,48 @@ function drawVisualization(step) {
   }
 }
 
-function nextStep() {
-  if (currentStep < demoData.steps.length - 1) {
-    renderStep(currentStep + 1);
+function kmeansGoInitial() {
+  kmeansRenderStep(0);
+}
+
+function kmeansAdvanceToPhase(targetPhase) {
+  const nextIdx = kmeansState.demoData.steps.findIndex((s, i) => i > kmeansState.currentStep && s.phase === targetPhase);
+  if (nextIdx !== -1) {
+    kmeansRenderStep(nextIdx);
   }
 }
 
-function previousStep() {
-  if (currentStep > 0) {
-    renderStep(currentStep - 1);
-  }
+function kmeansResetDemo() {
+  kmeansStopAutoPlay();
+  kmeansRenderStep(0);
 }
 
-function resetDemo() {
-  stopAutoPlay();
-  renderStep(0);
-}
-
-function toggleAutoPlay() {
-  if (isAutoPlaying) {
-    stopAutoPlay();
+function kmeansToggleAutoPlay() {
+  if (kmeansState.isAutoPlaying) {
+    kmeansStopAutoPlay();
   } else {
-    startAutoPlay();
+    kmeansStartAutoPlay();
   }
 }
 
-function startAutoPlay() {
-  isAutoPlaying = true;
-  document.getElementById('btnAutoPlay').classList.add('btn-secondary');
-  document.getElementById('btnAutoPlay').textContent = '⏸ Stop';
+function kmeansStartAutoPlay() {
+  kmeansState.isAutoPlaying = true;
+  document.getElementById('kmeansButtonAutoPlay').textContent = '⏸ Stop';
   
-  autoPlayInterval = setInterval(() => {
-    if (currentStep < demoData.steps.length - 1) {
-      nextStep();
+  kmeansState.autoPlayInterval = setInterval(() => {
+    if (kmeansState.currentStep < kmeansState.demoData.steps.length - 1) {
+      kmeansRenderStep(kmeansState.currentStep + 1);
     } else {
-      stopAutoPlay();
+      kmeansStopAutoPlay();
     }
-  }, 1500); // 1.5 seconds per step
+  }, 1500);
 }
 
-function stopAutoPlay() {
-  isAutoPlaying = false;
-  if (autoPlayInterval) {
-    clearInterval(autoPlayInterval);
-    autoPlayInterval = null;
+function kmeansStopAutoPlay() {
+  kmeansState.isAutoPlaying = false;
+  if (kmeansState.autoPlayInterval) {
+    clearInterval(kmeansState.autoPlayInterval);
+    kmeansState.autoPlayInterval = null;
   }
-  document.getElementById('btnAutoPlay').classList.remove('btn-secondary');
-  document.getElementById('btnAutoPlay').textContent = 'Auto Play';
+  document.getElementById('kmeansButtonAutoPlay').textContent = 'Auto Play';
 }
-
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', init);

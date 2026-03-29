@@ -264,7 +264,9 @@
       "threshold": 27.0,
       "gini": 0.4333,
       "information_gain": 0.0578,
-      "description": "Age \u2264 27.0"
+      "left_samples": 4,
+      "right_samples": 26,
+      "description": "Age <= 27.0"
     },
     {
       "id": 1,
@@ -272,7 +274,9 @@
       "threshold": 50790.5,
       "gini": 0.3818,
       "information_gain": 0.1093,
-      "description": "Income \u2264 50790.5"
+      "left_samples": 7,
+      "right_samples": 23,
+      "description": "Income <= 50790.5"
     },
     {
       "id": 2,
@@ -280,7 +284,9 @@
       "threshold": 39.0,
       "gini": 0.4781,
       "information_gain": 0.013,
-      "description": "Employment Years \u2264 39.0"
+      "left_samples": 29,
+      "right_samples": 1,
+      "description": "Employment Years <= 39.0"
     }
   ]
 }

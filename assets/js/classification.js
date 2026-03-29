@@ -1,161 +1,194 @@
 /**
- * Classification Training Interactive Demo
+ * Image Classification Demo - Ball Detection (Embedded version)
  */
 
-let demoData = null;
-let currentImageIndex = 0;
-let userLabels = {};  // Maps image id to user's label (0 or 1)
+let classificationState = {
+  demoData: null,
+  currentImageIndex: 0,
+  userLabels: [],
+  confusionMatrix: { tp: 0, tn: 0, fp: 0, fn: 0 }
+};
 
-async function init() {
+async function initClassification() {
   try {
-    // Load demo data
-    demoData = await loadJSON('../../data/classification_demo.json');
+    classificationState.demoData = await loadJSON('data/classification_demo.json');
+    classificationState.userLabels = new Array(classificationState.demoData.session.length).fill(null);
     
-    // Set up event listeners
-    document.getElementById('btnBomb').addEventListener('click', () => labelImage(1));
-    document.getElementById('btnNotBomb').addEventListener('click', () => labelImage(0));
-    document.getElementById('btnSubmit').addEventListener('click', submitAndShowResults);
+    document.getElementById('btnBall').addEventListener('click', () => classificationLabelImage(1));
+    document.getElementById('btnNotBall').addEventListener('click', () => classificationLabelImage(0));
+    document.getElementById('btnSubmit').addEventListener('click', classificationSubmitAnswers);
     
-    // Load first image
-    loadImage(0);
+    classificationShowImage(0);
   } catch (error) {
-    console.error('Failed to initialize demo:', error);
-    alert('Failed to load demo data. Please check the console.');
+    console.error('Failed to initialize Classification demo:', error);
   }
 }
 
-function loadImage(index) {
-  if (!demoData || index < 0 || index >= demoData.session.length) {
+function classificationShowImage(index) {
+  if (!classificationState.demoData || index < 0 || index >= classificationState.demoData.session.length) {
     return;
   }
   
-  currentImageIndex = index;
-  const item = demoData.session[index];
+  classificationState.currentImageIndex = index;
+  const imageData = classificationState.demoData.session[index];
+  const imageDisplay = document.getElementById('classificationImageDisplay') || document.getElementById('imageDisplay');
   
-  const imageDisplay = document.getElementById('imageDisplay');
-  const imagePath = `../../assets/images/${item.image_dir}/${item.image_path}`;
+  imageDisplay.innerHTML = '';
   
-  // Clear and load new image
-  imageDisplay.innerHTML = '<div class="image-loading">Loading image...</div>';
+  const slideContainer = document.createElement('div');
+  slideContainer.style.display = 'flex';
+  slideContainer.style.flexDirection = 'column';
+  slideContainer.style.alignItems = 'center';
+  slideContainer.style.justifyContent = 'center';
+  slideContainer.style.height = '100%';
+  slideContainer.style.textAlign = 'center';
+  slideContainer.style.padding = '2rem';
+  slideContainer.style.animation = 'fadeIn 0.3s ease-in';
+
+  // Story text (Officer Doggo)
+  const storyText = document.createElement('h3');
+  storyText.textContent = imageData.story_text || "Officer Doggo is inspecting an item...";
+  storyText.style.color = '#1f2937';
+  storyText.style.marginBottom = '1.5rem';
+  storyText.style.fontSize = '1.25rem';
+  slideContainer.appendChild(storyText);
+
+  // Emoji instead of image
+  const emojiDisplay = document.createElement('div');
+  emojiDisplay.textContent = imageData.emoji || '📦';
+  emojiDisplay.style.fontSize = '8rem';
+  emojiDisplay.style.lineHeight = '1';
+  emojiDisplay.style.margin = '1rem 0';
+  emojiDisplay.style.filter = 'drop-shadow(0 10px 15px rgba(0,0,0,0.1))';
+  slideContainer.appendChild(emojiDisplay);
+
+  const characterFace = document.createElement('div');
+  characterFace.textContent = '🐕';
+  characterFace.style.fontSize = '3rem';
+  characterFace.style.marginTop = '1rem';
+  slideContainer.appendChild(characterFace);
   
-  const img = new Image();
-  img.onload = () => {
-    imageDisplay.innerHTML = '';
-    imageDisplay.appendChild(img);
-  };
-  img.onerror = () => {
-    imageDisplay.innerHTML = `<div class="image-loading" style="color: var(--danger-color);">Error loading image</div>`;
-  };
-  img.src = imagePath;
+  const trackerContainer = document.createElement('div');
+  trackerContainer.style.display = 'flex';
+  trackerContainer.style.gap = '2rem';
+  trackerContainer.style.marginTop = '1.5rem';
   
-  // Update progress
-  updateProgress();
+  const ballsLabeled = classificationState.userLabels.map((l, i) => l === 1 ? (classificationState.demoData.session[i].emoji || '📦') : '').join('');
+  const ballTracker = document.createElement('div');
+  ballTracker.style.padding = '10px';
+  ballTracker.style.border = '2px solid #ef4444';
+  ballTracker.style.borderRadius = '8px';
+  ballTracker.style.minWidth = '120px';
+  ballTracker.innerHTML = `<h4 style="margin:0 0 10px 0;color:#ef4444;">🎾 Ball</h4><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${ballsLabeled}</div>`;
+
+  const notBallsLabeled = classificationState.userLabels.map((l, i) => l === 0 ? (classificationState.demoData.session[i].emoji || '📦') : '').join('');
+  const notBallTracker = document.createElement('div');
+  notBallTracker.style.padding = '10px';
+  notBallTracker.style.border = '2px solid #6b7280';
+  notBallTracker.style.borderRadius = '8px';
+  notBallTracker.style.minWidth = '120px';
+  notBallTracker.innerHTML = `<h4 style="margin:0 0 10px 0;color:#6b7280;">✅ Not Ball</h4><div style="font-size:1.5rem;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;">${notBallsLabeled}</div>`;
+
+  trackerContainer.appendChild(ballTracker);
+  trackerContainer.appendChild(notBallTracker);
+  slideContainer.appendChild(trackerContainer);
+
+  imageDisplay.appendChild(slideContainer);
+
+  const progressText = document.createElement('p');
+  progressText.textContent = `Slide ${index + 1} / ${classificationState.demoData.session.length}`;
+  progressText.style.marginTop = '12px';
+  progressText.style.color = '#6b7280';
+  progressText.style.fontSize = '14px';
+  imageDisplay.appendChild(progressText);
+
+  // Check how many labels
+  const labeledCount = classificationState.userLabels.filter(l => l !== null).length;
+  
+  // Auto-advance styling
+  document.getElementById('btnSubmit').disabled = labeledCount < 6 && index < classificationState.demoData.session.length - 1;
+
+  updateClassificationButtonStates();
 }
 
-function labelImage(label) {
-  const item = demoData.session[currentImageIndex];
-  userLabels[item.id] = label;
-  item.labeled = true;
-  item.student_label = label;
+function updateClassificationButtonStates() {
+  const userLabel = classificationState.userLabels[classificationState.currentImageIndex];
+  const ballBtn = document.getElementById('btnBall');
+  const notballBtn = document.getElementById('btnNotBall');
+
+  ballBtn.classList.remove('btn-secondary');
+  notballBtn.classList.remove('btn-secondary');
   
-  // Update accuracy
-  updateProgress();
-  
-  // Move to next unlabeled image
-  let nextIndex = currentImageIndex + 1;
-  while (nextIndex < demoData.session.length && demoData.session[nextIndex].labeled) {
-    nextIndex++;
-  }
-  
-  if (nextIndex < demoData.session.length) {
-    loadImage(nextIndex);
-  } else {
-    // All images labeled, show submit button prominence
-    document.getElementById('btnBomb').disabled = true;
-    document.getElementById('btnNotBomb').disabled = true;
+  if (userLabel === 1) {
+    ballBtn.classList.add('btn-secondary');
+  } else if (userLabel === 0) {
+    notballBtn.classList.add('btn-secondary');
   }
 }
 
-function updateProgress() {
-  const labeled = Object.keys(userLabels).length;
-  const total = demoData.session.length;
+function classificationLabelImage(label) {
+  classificationState.userLabels[classificationState.currentImageIndex] = label;
   
-  // Update counter
-  document.getElementById('progressCounter').textContent = `${labeled} / ${total}`;
+  updateClassificationButtonStates();
   
-  // Update progress bar
-  const progress = (labeled / total) * 100;
-  document.getElementById('progressBarFill').style.width = progress + '%';
+  const labeledCount = classificationState.userLabels.filter(l => l !== null).length;
+  document.getElementById('btnSubmit').disabled = labeledCount < 6;
   
-  // Calculate current accuracy
-  if (labeled > 0) {
-    let correct = 0;
-    for (const id in userLabels) {
-      const item = demoData.session.find(x => x.id == id);
-      if (item && userLabels[id] === item.ground_truth) {
-        correct++;
-      }
-    }
-    const accuracy = Math.round((correct / labeled) * 100);
-    document.getElementById('currentAccuracy').textContent = accuracy + '%';
+  if (classificationState.currentImageIndex < classificationState.demoData.session.length - 1) {
+    setTimeout(() => {
+      classificationShowImage(classificationState.currentImageIndex + 1);
+    }, 200);
   }
 }
 
-function submitAndShowResults() {
-  // Calculate metrics
-  let tp = 0;  // True positives: predicted bomb, actually bomb
-  let tn = 0;  // True negatives: predicted not bomb, actually not bomb
-  let fp = 0;  // False positives: predicted bomb, actually not bomb
-  let fn = 0;  // False negatives: predicted not bomb, actually bomb
-  
-  let correct = 0;
-  let total = 0;
-  
-  demoData.session.forEach(item => {
-    if (item.id in userLabels) {
-      total++;
-      const predicted = userLabels[item.id];
-      const actual = item.ground_truth;
-      
-      if (predicted === actual) {
-        correct++;
-      }
-      
-      // Confusion matrix
-      if (actual === 1) {  // Bomb
-        if (predicted === 1) {
-          tp++;
-        } else {
-          fn++;
-        }
-      } else {  // Not bomb
-        if (predicted === 1) {
-          fp++;
-        } else {
-          tn++;
-        }
-      }
-    }
+function classificationSubmitAnswers() {
+  const labeledCount = classificationState.userLabels.filter(label => label !== null).length;
+  if (labeledCount < 6) {
+    alert('Please label at least 6 items before submitting.');
+    return;
+  }
+
+  classificationState.confusionMatrix = { tp: 0, tn: 0, fp: 0, fn: 0 };
+
+  classificationState.demoData.session.forEach((imageData, i) => {
+    const prediction = classificationState.userLabels[i];
+    if (prediction === null) return;
+    
+    const actual = imageData.ground_truth;
+
+    if (prediction === 1 && actual === 1) classificationState.confusionMatrix.tp++;
+    else if (prediction === 0 && actual === 0) classificationState.confusionMatrix.tn++;
+    else if (prediction === 1 && actual === 0) classificationState.confusionMatrix.fp++;
+    else if (prediction === 0 && actual === 1) classificationState.confusionMatrix.fn++;
   });
   
-  const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-  
-  // Update results display
-  document.getElementById('finalAccuracy').textContent = accuracy + '%';
-  document.getElementById('totalLabeled').textContent = total;
-  document.getElementById('correctCount').textContent = correct;
-  document.getElementById('incorrectCount').textContent = total - correct;
-  
-  // Update confusion matrix
-  document.getElementById('tp').textContent = tp;
-  document.getElementById('tn').textContent = tn;
-  document.getElementById('fp').textContent = fp;
-  document.getElementById('fn').textContent = fn;
-  
-  // Hide labeling interface, show results
-  document.querySelector('.classification-container').style.display = 'none';
-  document.getElementById('resultsContainer').classList.add('show');
+  classificationShowResults();
 }
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', init);
+function classificationShowResults() {
+  const { tp, tn, fp, fn } = classificationState.confusionMatrix;
+  const total = tp + tn + fp + fn;
+  const accuracy = ((tp + tn) / total * 100).toFixed(2);
+  const precision = (tp / (tp + fp) * 100).toFixed(2);
+  const recall = (tp / (tp + fn) * 100).toFixed(2);
+  
+  const display = document.getElementById('classificationImageDisplay') || document.getElementById('imageDisplay');
+  display.innerHTML = `
+    <div style="text-align: center; padding: 20px; background: #f9fafb; border-radius: 8px;">
+      <h3 style="margin-top: 0; color: #1f2937;">Your Results</h3>
+      <div style="margin: 20px 0;">
+        <p style="font-size: 24px; font-weight: bold; color: #2563eb; margin: 10px 0;">${accuracy}% Accuracy</p>
+        <p style="color: #10b981; margin: 5px 0;">Right: ${tp + tn} / ${total}</p>
+        <p style="color: #ef4444; margin: 5px 0;">Wrong: ${fp + fn} / ${total}</p>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('btnBall').style.display = 'none';
+  document.getElementById('btnNotBall').style.display = 'none';
+  document.getElementById('btnSubmit').style.display = 'none';
+}
+
+
+
+

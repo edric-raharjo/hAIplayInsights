@@ -179,7 +179,9 @@ def generate_tree_demo(n_samples=30):
                 'threshold': splits['age']['threshold'],
                 'gini': splits['age']['gini_after_split'],
                 'information_gain': splits['age']['information_gain'],
-                'description': f"Age ≤ {splits['age']['threshold']}"
+                'left_samples': splits['age']['left_samples'],
+                'right_samples': splits['age']['right_samples'],
+                'description': f"Age <= {splits['age']['threshold']}"
             },
             {
                 'id': 1,
@@ -187,7 +189,9 @@ def generate_tree_demo(n_samples=30):
                 'threshold': splits['income']['threshold'],
                 'gini': splits['income']['gini_after_split'],
                 'information_gain': splits['income']['information_gain'],
-                'description': f"Income ≤ {splits['income']['threshold']}"
+                'left_samples': splits['income']['left_samples'],
+                'right_samples': splits['income']['right_samples'],
+                'description': f"Income <= {splits['income']['threshold']}"
             },
             {
                 'id': 2,
@@ -195,7 +199,9 @@ def generate_tree_demo(n_samples=30):
                 'threshold': splits['employment_years']['threshold'],
                 'gini': splits['employment_years']['gini_after_split'],
                 'information_gain': splits['employment_years']['information_gain'],
-                'description': f"Employment Years ≤ {splits['employment_years']['threshold']}"
+                'left_samples': splits['employment_years']['left_samples'],
+                'right_samples': splits['employment_years']['right_samples'],
+                'description': f"Employment Years <= {splits['employment_years']['threshold']}"
             }
         ]
     }

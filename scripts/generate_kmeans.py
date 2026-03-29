@@ -13,12 +13,28 @@ def euclidean_distance(p1, p2):
 
 
 def generate_sample_data(n_points=25, bounds=(0, 100)):
-    """Generate random 2D sample points"""
+    """Generate 2D sample points clustered in blobs"""
     points = []
-    for _ in range(n_points):
-        x = random.uniform(bounds[0], bounds[1])
-        y = random.uniform(bounds[0], bounds[1])
-        points.append([round(x, 2), round(y, 2)])
+    # Define 3 blob centers
+    blob_centers = [
+        (bounds[1] * 0.25, bounds[1] * 0.25),
+        (bounds[1] * 0.75, bounds[1] * 0.3),
+        (bounds[1] * 0.5, bounds[1] * 0.75)
+    ]
+    
+    points_per_blob = n_points // 3
+    
+    for i, center in enumerate(blob_centers):
+        n = points_per_blob + (1 if i < n_points % 3 else 0)
+        for _ in range(n):
+            x = random.gauss(center[0], 10) # 10 is standard dev
+            y = random.gauss(center[1], 10)
+            # Clamp to bounds
+            x = max(bounds[0] + 2, min(bounds[1] - 2, x))
+            y = max(bounds[0] + 2, min(bounds[1] - 2, y))
+            points.append([round(x, 2), round(y, 2)])
+            
+    random.shuffle(points)
     return points
 
 
