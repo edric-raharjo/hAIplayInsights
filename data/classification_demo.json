@@ -1,269 +1,252 @@
 {
   "metadata": {
     "algorithm": "Classification Training",
-    "task": "Classify images as ball or not ball",
-    "total_images": 32,
-    "balls": 16,
-    "non_balls": 16,
+    "task": "Classify items as ball or not ball",
+    "total_images": 30,
+    "bombs": 15,
+    "non_bombs": 15,
     "image_size": 200
   },
   "session": [
     {
       "id": 0,
-      "image_path": "circle_2.png",
-      "image_dir": "non_balls",
+      "image_path": "item_0.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udfb3",
-      "story_text": "Officer Doggo sniffed bag #1... Could this be dangerous?"
+      "emoji": "🌳",
+      "story_text": "Officer Doggo sniffed item #1... Is it a ball?"
     },
     {
       "id": 1,
-      "image_path": "ball_color1_wick1.png",
+      "image_path": "item_1.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #2... Could this be dangerous?"
+      "emoji": "🏀",
+      "story_text": "Officer Doggo sniffed item #2... Is it a ball?"
     },
     {
       "id": 2,
-      "image_path": "ball_color2_wick2.png",
+      "image_path": "item_2.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #3... Could this be dangerous?"
+      "emoji": "🎱",
+      "story_text": "Officer Doggo sniffed item #3... Is it a ball?"
     },
     {
       "id": 3,
-      "image_path": "ball_color3_wick3.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #4... Could this be dangerous?"
+      "image_path": "item_3.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍌",
+      "story_text": "Officer Doggo sniffed item #4... Is it a ball?"
     },
     {
       "id": 4,
-      "image_path": "circle_1.png",
-      "image_dir": "non_balls",
+      "image_path": "item_4.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udfc0",
-      "story_text": "Officer Doggo sniffed bag #5... Could this be dangerous?"
+      "emoji": "🍉",
+      "story_text": "Officer Doggo sniffed item #5... Is it a ball?"
     },
     {
       "id": 5,
-      "image_path": "ball_color2_wick3.png",
+      "image_path": "item_5.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #6... Could this be dangerous?"
+      "emoji": "⚽",
+      "story_text": "Officer Doggo sniffed item #6... Is it a ball?"
     },
     {
       "id": 6,
-      "image_path": "sun_2.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #7... Could this be dangerous?"
+      "image_path": "item_6.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🏀",
+      "story_text": "Officer Doggo sniffed item #7... Is it a ball?"
     },
     {
       "id": 7,
-      "image_path": "ball_color1_wick2.png",
+      "image_path": "item_7.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #8... Could this be dangerous?"
+      "emoji": "⚽",
+      "story_text": "Officer Doggo sniffed item #8... Is it a ball?"
     },
     {
       "id": 8,
-      "image_path": "ball_3.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #9... Could this be dangerous?"
+      "image_path": "item_8.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🏀",
+      "story_text": "Officer Doggo sniffed item #9... Is it a ball?"
     },
     {
       "id": 9,
-      "image_path": "ball_color3_wick0.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #10... Could this be dangerous?"
+      "image_path": "item_9.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍎",
+      "story_text": "Officer Doggo sniffed item #10... Is it a ball?"
     },
     {
       "id": 10,
-      "image_path": "ball_0.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\u26bd",
-      "story_text": "Officer Doggo sniffed bag #11... Could this be dangerous?"
+      "image_path": "item_10.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Officer Doggo sniffed item #11... Is it a ball?"
     },
     {
       "id": 11,
-      "image_path": "ball_color2_wick1.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #12... Could this be dangerous?"
+      "image_path": "item_11.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍎",
+      "story_text": "Officer Doggo sniffed item #12... Is it a ball?"
     },
     {
       "id": 12,
-      "image_path": "square_0.png",
-      "image_dir": "non_balls",
+      "image_path": "item_12.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\u26bd",
-      "story_text": "Officer Doggo sniffed bag #13... Could this be dangerous?"
+      "emoji": "🌳",
+      "story_text": "Officer Doggo sniffed item #13... Is it a ball?"
     },
     {
       "id": 13,
-      "image_path": "ball_color3_wick2.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #14... Could this be dangerous?"
+      "image_path": "item_13.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍌",
+      "story_text": "Officer Doggo sniffed item #14... Is it a ball?"
     },
     {
       "id": 14,
-      "image_path": "circle_0.png",
-      "image_dir": "non_balls",
+      "image_path": "item_14.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #15... Could this be dangerous?"
+      "emoji": "🍌",
+      "story_text": "Officer Doggo sniffed item #15... Is it a ball?"
     },
     {
       "id": 15,
-      "image_path": "sun_0.png",
-      "image_dir": "non_balls",
+      "image_path": "item_15.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udf4e",
-      "story_text": "Officer Doggo sniffed bag #16... Could this be dangerous?"
+      "emoji": "🍉",
+      "story_text": "Officer Doggo sniffed item #16... Is it a ball?"
     },
     {
       "id": 16,
-      "image_path": "square_2.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udf4e",
-      "story_text": "Officer Doggo sniffed bag #17... Could this be dangerous?"
+      "image_path": "item_16.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🎱",
+      "story_text": "Officer Doggo sniffed item #17... Is it a ball?"
     },
     {
       "id": 17,
-      "image_path": "ball_color0_wick1.png",
+      "image_path": "item_17.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #18... Could this be dangerous?"
+      "emoji": "🎱",
+      "story_text": "Officer Doggo sniffed item #18... Is it a ball?"
     },
     {
       "id": 18,
-      "image_path": "ball_color3_wick1.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #19... Could this be dangerous?"
+      "image_path": "item_18.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🌲",
+      "story_text": "Officer Doggo sniffed item #19... Is it a ball?"
     },
     {
       "id": 19,
-      "image_path": "ball_2.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfc0",
-      "story_text": "Officer Doggo sniffed bag #20... Could this be dangerous?"
+      "image_path": "item_19.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🏀",
+      "story_text": "Officer Doggo sniffed item #20... Is it a ball?"
     },
     {
       "id": 20,
-      "image_path": "ball_color0_wick2.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #21... Could this be dangerous?"
+      "image_path": "item_20.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍉",
+      "story_text": "Officer Doggo sniffed item #21... Is it a ball?"
     },
     {
       "id": 21,
-      "image_path": "ball_1.png",
-      "image_dir": "non_balls",
+      "image_path": "item_21.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udf4e",
-      "story_text": "Officer Doggo sniffed bag #22... Could this be dangerous?"
+      "emoji": "🌲",
+      "story_text": "Officer Doggo sniffed item #22... Is it a ball?"
     },
     {
       "id": 22,
-      "image_path": "sun_1.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #23... Could this be dangerous?"
+      "image_path": "item_22.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🎱",
+      "story_text": "Officer Doggo sniffed item #23... Is it a ball?"
     },
     {
       "id": 23,
-      "image_path": "ball_color0_wick3.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #24... Could this be dangerous?"
+      "image_path": "item_23.png",
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🌳",
+      "story_text": "Officer Doggo sniffed item #24... Is it a ball?"
     },
     {
       "id": 24,
-      "image_path": "square_1.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #25... Could this be dangerous?"
+      "image_path": "item_24.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🎱",
+      "story_text": "Officer Doggo sniffed item #25... Is it a ball?"
     },
     {
       "id": 25,
-      "image_path": "ball_color1_wick0.png",
+      "image_path": "item_25.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #26... Could this be dangerous?"
+      "emoji": "🏀",
+      "story_text": "Officer Doggo sniffed item #26... Is it a ball?"
     },
     {
       "id": 26,
-      "image_path": "circle_3.png",
-      "image_dir": "non_balls",
+      "image_path": "item_26.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udf49",
-      "story_text": "Officer Doggo sniffed bag #27... Could this be dangerous?"
+      "emoji": "🌲",
+      "story_text": "Officer Doggo sniffed item #27... Is it a ball?"
     },
     {
       "id": 27,
-      "image_path": "square_3.png",
-      "image_dir": "non_balls",
-      "ground_truth": 0,
-      "emoji": "\ud83c\udfb1",
-      "story_text": "Officer Doggo sniffed bag #28... Could this be dangerous?"
+      "image_path": "item_27.png",
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Officer Doggo sniffed item #28... Is it a ball?"
     },
     {
       "id": 28,
-      "image_path": "ball_color2_wick0.png",
+      "image_path": "item_28.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #29... Could this be dangerous?"
+      "emoji": "⚽",
+      "story_text": "Officer Doggo sniffed item #29... Is it a ball?"
     },
     {
       "id": 29,
-      "image_path": "sun_3.png",
-      "image_dir": "non_balls",
+      "image_path": "item_29.png",
+      "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "\ud83c\udf4e",
-      "story_text": "Officer Doggo sniffed bag #30... Could this be dangerous?"
-    },
-    {
-      "id": 30,
-      "image_path": "ball_color0_wick0.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #31... Could this be dangerous?"
-    },
-    {
-      "id": 31,
-      "image_path": "ball_color1_wick3.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "\ud83c\udfbe",
-      "story_text": "Officer Doggo sniffed bag #32... Could this be dangerous?"
+      "emoji": "🍎",
+      "story_text": "Officer Doggo sniffed item #30... Is it a ball?"
     }
   ]
 }
-
