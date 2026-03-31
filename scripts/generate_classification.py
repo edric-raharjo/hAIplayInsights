@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import random
 
@@ -9,9 +9,9 @@ def get_features(emoji):
         '🏀': [10, 9, 0, 620, 0],
         '🍎': [8, 1, 10, 150, 1],
         '🍌': [1, 0, 10, 120, 1],
-        '🍉': [7, 0, 9, 9000, 0],
-        '🌲': [1, 0, 0, 500000, 1],
-        '🌳': [3, 0, 0, 800000, 1]
+        '🍉': [7, 0, 9, 9000, 1],
+        '🚗': [1, 0, 0, 500000, 0],
+        '🏠': [3, 0, 0, 800000, 0]
     }
     return features.get(emoji, [0, 0, 0, 0, 0])
 
@@ -28,8 +28,8 @@ def generate_classification_demo(output_dir='data'):
         {'label': 0, 'emoji': '🍎'},
         {'label': 0, 'emoji': '🍌'},
         {'label': 0, 'emoji': '🍉'},
-        {'label': 0, 'emoji': '🌲'},
-        {'label': 0, 'emoji': '🌳'}
+        {'label': 0, 'emoji': '🚗'},
+        {'label': 0, 'emoji': '🏠'}
     ] * 5
     
     all_items = balls + not_balls

@@ -19,13 +19,13 @@
       "image_path": "item_0.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍌",
+      "emoji": "??",
       "story_text": "Item #1... Could this be a ball?",
       "features": [
-        1.0724561829094015,
+        3.0724561829094013,
         0.9462315279587412,
-        9.757068754416707,
-        121.24897515055744,
+        0,
+        808326.5010037163,
         1
       ]
     },
@@ -34,14 +34,14 @@
       "image_path": "item_1.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🏀",
+      "emoji": "??",
       "story_text": "Item #2... Could this be a ball?",
       "features": [
-        10,
-        9.237039504728493,
+        3.6588093285059897,
+        0.2370395047284921,
         0.7234138006215545,
-        629.5916660118386,
-        0
+        812376.343241082,
+        1
       ]
     },
     {
@@ -49,14 +49,14 @@
       "image_path": "item_2.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🎱",
+      "emoji": "??",
       "story_text": "Item #3... Could this be a ball?",
       "features": [
-        10,
-        1.0916487673113244,
+        3.409143672429847,
         0,
-        153.26041483526745,
-        0
+        0,
+        766302.0741763372,
+        1
       ]
     },
     {
@@ -64,14 +64,14 @@
       "image_path": "item_3.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🏀",
+      "emoji": "??",
       "story_text": "Item #4... Could this be a ball?",
       "features": [
-        9.159583953847255,
-        8.46558177272206,
+        2.159583953847255,
         0,
-        592.4687267856515,
-        0
+        0,
+        764475.7764976148,
+        1
       ]
     },
     {
@@ -79,14 +79,14 @@
       "image_path": "item_4.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🎱",
+      "emoji": "??",
       "story_text": "Item #5... Could this be a ball?",
       "features": [
-        10,
-        1.7296643579401685,
+        3.2713688885288006,
         0,
-        150.7042249846876,
-        0
+        0,
+        753521.1249234381,
+        1
       ]
     },
     {
@@ -94,13 +94,13 @@
       "image_path": "item_5.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍎",
+      "emoji": "??",
       "story_text": "Item #6... Could this be a ball?",
       "features": [
-        7.533955644098227,
-        1.873309175424988,
-        10,
-        153.27393017000963,
+        2.533955644098227,
+        0.873309175424988,
+        0.2960707704931871,
+        817460.960906718,
         1
       ]
     },
@@ -109,13 +109,13 @@
       "image_path": "item_6.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
+      "emoji": "??",
       "story_text": "Item #7... Could this be a ball?",
       "features": [
-        6.342277296396194,
+        2.342277296396194,
         0.45825359590069836,
-        8.326804987523857,
-        8783.019795163766,
+        0,
+        780712.8706812237,
         1
       ]
     },
@@ -124,7 +124,7 @@
       "image_path": "item_7.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #8... Could this be a ball?",
       "features": [
         10,
@@ -139,13 +139,13 @@
       "image_path": "item_8.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍎",
+      "emoji": "??",
       "story_text": "Item #9... Could this be a ball?",
       "features": [
-        8.685703840379619,
-        1.5519998230924896,
-        9.45809614392821,
-        135.96300731712114,
+        3.6857038403796194,
+        0.5519998230924896,
+        0,
+        725136.039024646,
         1
       ]
     },
@@ -154,14 +154,14 @@
       "image_path": "item_9.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🎱",
+      "emoji": "??",
       "story_text": "Item #10... Could this be a ball?",
       "features": [
-        9.630906096118164,
-        1.5354817519514055,
+        2.6309060961181636,
         0,
-        174.17311085872174,
-        0
+        0,
+        870865.5542936088,
+        1
       ]
     },
     {
@@ -169,13 +169,13 @@
       "image_path": "item_10.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
+      "emoji": "??",
       "story_text": "Item #11... Could this be a ball?",
       "features": [
-        7.752735252945338,
+        3.752735252945338,
         0,
-        9.31087733058976,
-        8812.137421909196,
+        0.3108773305897601,
+        783301.1041697063,
         1
       ]
     },
@@ -184,7 +184,7 @@
       "image_path": "item_11.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #12... Could this be a ball?",
       "features": [
         10,
@@ -199,7 +199,7 @@
       "image_path": "item_12.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #13... Could this be a ball?",
       "features": [
         10,
@@ -214,7 +214,7 @@
       "image_path": "item_13.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #14... Could this be a ball?",
       "features": [
         9.798801010280794,
@@ -229,13 +229,13 @@
       "image_path": "item_14.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
+      "emoji": "??",
       "story_text": "Item #15... Could this be a ball?",
       "features": [
-        6.181818824347587,
+        2.181818824347588,
         0,
-        8.219298260701319,
-        9229.402875065562,
+        0,
+        820391.3666724943,
         1
       ]
     }
@@ -246,14 +246,14 @@
       "image_path": "item_15.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🏠",
+      "emoji": "??",
       "story_text": "Item #16... Could this be a ball?",
       "features": [
         3.584158728725928,
         0,
         0,
         781059.085841046,
-        0
+        1
       ]
     },
     {
@@ -261,14 +261,14 @@
       "image_path": "item_16.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🎱",
+      "emoji": "??",
       "story_text": "Item #17... Could this be a ball?",
       "features": [
-        10,
-        2.0582286901982743,
+        3.9922427604801936,
+        0.058228690198274036,
         0.9421567552272363,
-        171.54495047150394,
-        0
+        857724.7523575197,
+        1
       ]
     },
     {
@@ -276,13 +276,13 @@
       "image_path": "item_17.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍎",
+      "emoji": "??",
       "story_text": "Item #18... Could this be a ball?",
       "features": [
-        7.02296204388564,
-        1.4414436387203893,
-        10,
-        151.10910991226388,
+        2.0229620438856393,
+        0.4414436387203893,
+        0.36342073805314956,
+        805915.2528654073,
         1
       ]
     },
@@ -291,14 +291,14 @@
       "image_path": "item_18.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🏠",
+      "emoji": "??",
       "story_text": "Item #19... Could this be a ball?",
       "features": [
         2.533650379905086,
         0.2819235971596161,
         0,
         789562.4401070569,
-        0
+        1
       ]
     },
     {
@@ -306,7 +306,7 @@
       "image_path": "item_19.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #20... Could this be a ball?",
       "features": [
         9.907447412658414,
@@ -321,14 +321,14 @@
       "image_path": "item_20.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🚗",
+      "emoji": "??",
       "story_text": "Item #21... Could this be a ball?",
       "features": [
-        1.0011722261005966,
+        3.0011722261005964,
         0,
         0.825255678689641,
-        537051.8569836768,
-        0
+        859282.9711738828,
+        1
       ]
     },
     {
@@ -336,7 +336,7 @@
       "image_path": "item_21.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
+      "emoji": "?",
       "story_text": "Item #22... Could this be a ball?",
       "features": [
         9.596889582897266,
@@ -351,14 +351,14 @@
       "image_path": "item_22.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🚗",
+      "emoji": "??",
       "story_text": "Item #23... Could this be a ball?",
       "features": [
-        1.5250216001503025,
+        3.5250216001503025,
         0.07875806023925147,
         0.5572529572611165,
-        503035.3672195178,
-        0
+        804856.5875512285,
+        1
       ]
     },
     {
@@ -366,14 +366,14 @@
       "image_path": "item_23.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🚗",
+      "emoji": "??",
       "story_text": "Item #24... Could this be a ball?",
       "features": [
-        0.0011437922558870106,
+        2.001143792255887,
         0,
         0,
-        542909.8616264617,
-        0
+        868655.7786023387,
+        1
       ]
     },
     {
@@ -381,14 +381,14 @@
       "image_path": "item_24.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🏠",
+      "emoji": "??",
       "story_text": "Item #25... Could this be a ball?",
       "features": [
         3.7574437556463685,
         0.6633310587223589,
         0,
         729268.02663907,
-        0
+        1
       ]
     },
     {
@@ -396,13 +396,13 @@
       "image_path": "item_25.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍌",
+      "emoji": "??",
       "story_text": "Item #26... Could this be a ball?",
       "features": [
-        1.756019198408081,
+        3.7560191984080813,
         0.8938988905959881,
-        9.171306904135758,
-        119.66377111959874,
+        0,
+        797758.4741306582,
         1
       ]
     },
@@ -411,14 +411,14 @@
       "image_path": "item_26.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🏠",
+      "emoji": "??",
       "story_text": "Item #27... Could this be a ball?",
       "features": [
         2.138425036936767,
         0.5212043305144631,
         0.5316688586139755,
         740542.6343199621,
-        0
+        1
       ]
     },
     {
@@ -426,14 +426,14 @@
       "image_path": "item_27.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🏀",
+      "emoji": "??",
       "story_text": "Item #28... Could this be a ball?",
       "features": [
-        9.950564756197462,
-        9.099607186989887,
+        2.950564756197463,
+        0.0996071869898878,
         0,
-        666.1816970945721,
-        0
+        859589.2865736414,
+        1
       ]
     },
     {
@@ -441,14 +441,14 @@
       "image_path": "item_28.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🎱",
+      "emoji": "??",
       "story_text": "Item #29... Could this be a ball?",
       "features": [
-        9.846275880401773,
-        1.423596410884164,
+        2.846275880401774,
+        0,
         0.07859217755891668,
-        167.35779421087926,
-        0
+        836788.9710543964,
+        1
       ]
     },
     {
@@ -456,13 +456,13 @@
       "image_path": "item_29.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
+      "emoji": "??",
       "story_text": "Item #30... Could this be a ball?",
       "features": [
-        6.402302126779392,
+        2.402302126779392,
         0,
-        9.990298713321788,
-        9269.780503751017,
+        0.9902987133217893,
+        823980.4892223127,
         1
       ]
     }
