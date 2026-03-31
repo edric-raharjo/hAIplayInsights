@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,392 +6,86 @@
   <title>Classification Training Demo</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
   <style>
-    .demo-section {
-      max-width: 900px;
-      margin: 0 auto;
+    .demo-section { max-width: 1200px; margin: 0 auto; }
+    .classification-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 20px;
+      align-items: start;
     }
-
     .classification-container {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 2rem;
+      padding: 0;
+      overflow: hidden;
       margin-bottom: 2rem;
     }
-
     .image-display {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 400px;
-      background-color: var(--bg-color);
-      border: 2px solid var(--border-color);
+      min-height: 480px;
+      background-color: transparent;
+      border: none;
+      margin: 0;
+      position: relative;
+    }
+    .control-panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      margin-bottom: 2rem;
-      overflow: hidden;
-    }
-
-    .image-display img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      animation: fadeIn 0.3s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .image-loading {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-    }
-
-    .progress-info {
+      padding: 1.5rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background-color: var(--bg-color);
-      border-radius: 6px;
-    }
-
-    .progress-info-left {
-      flex: 1;
-    }
-
-    .progress-counter {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--primary-color);
-    }
-
-    .progress-bar-mini {
-      height: 6px;
-      background-color: var(--border-color);
-      border-radius: 3px;
-      margin-top: 0.5rem;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background-color: var(--primary-color);
-      transition: width 0.3s ease;
-    }
-
-    .accuracy-badge {
-      background-color: var(--secondary-color);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .button-group-large {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .btn-large {
-      padding: 1rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .btn-large:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-large:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .results-container {
-      display: none;
-      background-color: var(--bg-color);
-      border: 2px solid var(--secondary-color);
-      border-radius: 8px;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .results-container.show {
-      display: block;
-    }
-
-    .results-title {
-      font-size: 1.5rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      flex-direction: column;
       gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .result-box {
-      background-color: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    .result-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-color);
-    }
-
-    .result-label {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-top: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .confusionMatrix {
-      max-width: 500px;
-      margin: 2rem auto;
-      background-color: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-
-    .matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-    }
-
-    .matrix-table td {
-      padding: 0.75rem;
-      text-align: center;
-      border: 1px solid var(--border-color);
-      font-size: 0.9rem;
-    }
-
-    .matrix-table .header {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 600;
-    }
-
-    .matrix-table .correct {
-      background-color: #d1fae5;
-      color: #065f46;
-    }
-
-    .matrix-table .incorrect {
-      background-color: #fee2e2;
-      color: #7f1d1d;
-    }
-
-    .instructions {
-      background-color: #eff6ff;
-      border-left: 4px solid var(--primary-color);
-      padding: 1rem;
-      border-radius: 4px;
-      margin-bottom: 1.5rem;
-    }
-
-    .instructions strong {
-      color: var(--primary-color);
-    }
-
-    @media (max-width: 640px) {
-      .button-group-large {
-        grid-template-columns: 1fr;
-      }
-
-      .progress-info {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .classification-container {
-        padding: 1rem;
-      }
-
-      .demo-content-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 2rem;
-        align-items: start;
-        margin-bottom: 2rem;
-      }
-      @media (max-width: 900px) {
-        .demo-content-wrapper {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .image-display {
-        min-height: 300px;
-      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="logo">📊 DS Algorithms</div>
-      <nav>
-        <a href="../../index.html">Home</a>
-        <a href="../../index.html#home">Demos</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <div class="container demo-section">
-      <h1>Classification Training</h1>
-      <p>
-        Learn to classify objects by labeling images. Identify whether each image contains a ball or not. 
-        After labeling all images, you'll see your accuracy compared to ground truth labels.
+  <div class="demo-section">
+    <div class="intro">
+      <div class="demo-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <span style="font-size: 2rem;">🕵️‍♀️</span>
+        <h2 style="margin: 0; color: var(--text-color);">Classification Training</h2>
+      </div>
+      <p style="color: #64748b; font-size: 1.1rem; max-width: 800px; margin-bottom: 2rem; line-height: 1.6;">
+        Learn to classify objects by labeling items. Identify whether each item is a ball or not based on its tabular features. You'll train a KNN model with your labels, which will then predict on an unseen test set!
       </p>
+    </div>
 
-            <div class="classification-container" style="padding: 0; background: transparent; border: none;">
-        <div class="demo-content-wrapper" style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: start; margin-bottom: 2rem;">
-          
-          <!-- Image Display -->
-          <div class="image-display" id="imageDisplay" style="min-height: 400px; margin-bottom: 0;">
-            <div class="image-loading">Loading first image...</div>
-          </div>
-
-          <!-- Right Controls -->
-          <div class="controls-section" style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; height: 100%; min-height: 400px; box-sizing: border-box;">
-            <!-- Instructions -->
-            <div class="instructions" style="background-color: #eff6ff; border-left: 4px solid var(--primary-color); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; color: #333; font-size: 0.95rem;">
-              <strong>📌 Task:</strong> Look at each image and classify it as a <strong>"Ball"</strong> or <strong>"Not Ball"</strong>.
-            </div>
-
-            <!-- Progress Info -->
-            <div class="progress-info" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-color); border-radius: 6px;">
-              <div class="progress-info-left" style="flex: 1;">
-                <div class="progress-counter" id="progressCounter" style="font-weight: 700; font-size: 1.25rem; color: var(--primary-color);">0 / 32</div>     
-                <div class="progress-bar-mini" style="height: 6px; background-color: var(--border-color); border-radius: 3px; margin-top: 0.5rem; overflow: hidden;">
-                  <div class="progress-bar-fill" id="progressBarFill" style="width: 0%; height: 100%; background-color: var(--primary-color); transition: width 0.3s ease;"></div>
-                </div>
-              </div>
-              <div class="accuracy-badge" style="background-color: var(--secondary-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem; margin-left: 1rem;">
-                Accuracy: <span id="currentAccuracy">0%</span>
-              </div>
-            </div>
-
-            <div style="flex-grow: 1;"></div>
-
-            <!-- Control Buttons -->
-            <div class="button-group-large" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: auto; margin-bottom: 1rem; padding-top: 1rem;">
-              <button id="btnBall" class="btn-large btn-danger" style="background-color: #ef4444; border:none; color:white; padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;">🎾 Ball</button>    
-              <button id="btnNotBall" class="btn-large btn-secondary" style="background-color: #10b981; border:none; color:white; padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer;">✅ Not Ball</button>
-            </div>
-
-            <button id="btnSubmit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; background-color: #2563eb; border:none; color:white; border-radius: 8px; font-weight: bold; cursor: pointer;">
-              📊 Submit & See Results
-            </button>
-          </div>
+    <div class="classification-grid">
+      <div class="classification-container shadow-sm">
+        <div id="imageDisplay" class="image-display">
+          <div style="font-size: 1.2rem; color: #64748b; animation: pulse 1.5s infinite;">Loading first item...</div>
         </div>
-
-        <!-- Results Section -->
-        <div class="results-container" id="resultsContainer">
-          <div class="results-title">🎉 Classification Complete!</div>
-          
-          <div class="results-grid">
-            <div class="result-box">
-              <div class="result-value" id="finalAccuracy">0%</div>
-              <div class="result-label">Overall Accuracy</div>
-            </div>
-            <div class="result-box">
-              <div class="result-value" id="totalLabeled">0</div>
-              <div class="result-label">Images Labeled</div>
-            </div>
-            <div class="result-box">
-              <div class="result-value" id="correctCount">0</div>
-              <div class="result-label">Correct</div>
-            </div>
-            <div class="result-box">
-              <div class="result-value" id="incorrectCount">0</div>
-              <div class="result-label">Incorrect</div>
-            </div>
-          </div>
-
-          <!-- Confusion Matrix -->
-          <div class="confusionMatrix">
-            <h4 style="margin-bottom: 1rem;">Confusion Matrix</h4>
-            <table class="matrix-table">
-              <tr>
-                <td class="header"></td>
-                <td class="header">Predicted: Ball</td>
-                <td class="header">Predicted: Not Ball</td>
-              </tr>
-              <tr>
-                <td class="header" style="width: 120px;">Actual: Ball</td>
-                <td class="correct" id="tp">0</td>
-                <td class="incorrect" id="fn">0</td>
-              </tr>
-              <tr>
-                <td class="header">Actual: Not Ball</td>
-                <td class="incorrect" id="fp">0</td>
-                <td class="correct" id="tn">0</td>
-              </tr>
-            </table>
-          </div>
-
-          <button class="btn btn-primary" onclick="location.href='../../index.html'">
-            ← Back to Home
+      </div>
+      
+      <div class="control-panel shadow-sm">
+        <div class="task-card" style="background-color: #f0fdf4; border-left: 4px solid var(--primary-color); padding: 1.2rem; border-radius: 4px;">
+          <strong>📌 Task:</strong> Look at each item and classify it as a <strong>"Ball"</strong> or <strong>"Not Ball"</strong>.
+        </div>
+        
+        <div class="controls" style="display: flex; flex-direction: column; gap: 1rem;">
+          <button id="btnBall" class="btn-large btn-danger" style="background-color: #ef4444; border:none; color:white; padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: transform 0.1s;">⚽ Ball</button>
+          <button id="btnNotBall" class="btn-large btn-secondary" style="background-color: #10b981; border:none; color:white; padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: transform 0.1s;">✅ Not Ball</button>
+        </div>
+        
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <button id="btnSubmit" class="btn btn-primary" style="width: 100%; padding: 0.875rem; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <span>Train Model & Test</span> 🎓
           </button>
         </div>
       </div>
-
-      <!-- Explanation -->
-      <div class="card">
-        <h3>What You're Learning</h3>
-        <p>
-          <strong>Classification</strong> is a supervised learning task where you learn to predict a category 
-          (ball or not ball) based on input features (visual patterns in images).
-        </p>
-        <p>
-          By manually labeling images and comparing with ground truth, you understand:
-        </p>
-        <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem;">
-          <li><strong>Ground Truth:</strong> The correct labels we compare against</li>
-          <li><strong>Accuracy:</strong> Percentage of correct predictions</li>
-          <li><strong>Confusion Matrix:</strong> How your predictions align with reality</li>
-          <li><strong>Feature Recognition:</strong> What visual clues distinguish categories</li>
-        </ul>
-      </div>
     </div>
-  </main>
+  </div>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2024 Data Science Algorithm Demonstrations. Educational tool.</p>
-    </div>
-  </footer>
-
-  <script src="../../assets/js/common.js"></script>
+  <script src="../../assets/js/main.js"></script>
   <script src="../../assets/js/classification.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initClassification();
+    });
+  </script>
 </body>
 </html>
-
-

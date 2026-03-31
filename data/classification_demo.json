@@ -1,10 +1,16 @@
 {
   "metadata": {
-    "algorithm": "Classification Training",
+    "algorithm": "KNN Classification",
     "task": "Classify items as ball or not ball",
-    "total_images": 30,
-    "bombs": 15,
-    "non_bombs": 15,
+    "total_train": 15,
+    "total_test": 15,
+    "feature_names": [
+      "Sphericity (0-10)",
+      "Bounciness (0-10)",
+      "Edibility (0-10)",
+      "Weight (g)",
+      "Is Plant"
+    ],
     "image_size": 200
   },
   "session": [
@@ -13,8 +19,15 @@
       "image_path": "item_0.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🌳",
-      "story_text": "Officer Doggo sniffed item #1... Is it a ball?"
+      "emoji": "🍌",
+      "story_text": "Item #1... Could this be a ball?",
+      "features": [
+        1.0724561829094015,
+        0.9462315279587412,
+        9.757068754416707,
+        121.24897515055744,
+        1
+      ]
     },
     {
       "id": 1,
@@ -22,7 +35,14 @@
       "image_dir": "balls",
       "ground_truth": 1,
       "emoji": "🏀",
-      "story_text": "Officer Doggo sniffed item #2... Is it a ball?"
+      "story_text": "Item #2... Could this be a ball?",
+      "features": [
+        10,
+        9.237039504728493,
+        0.7234138006215545,
+        629.5916660118386,
+        0
+      ]
     },
     {
       "id": 2,
@@ -30,39 +50,74 @@
       "image_dir": "balls",
       "ground_truth": 1,
       "emoji": "🎱",
-      "story_text": "Officer Doggo sniffed item #3... Is it a ball?"
+      "story_text": "Item #3... Could this be a ball?",
+      "features": [
+        10,
+        1.0916487673113244,
+        0,
+        153.26041483526745,
+        0
+      ]
     },
     {
       "id": 3,
       "image_path": "item_3.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🍌",
-      "story_text": "Officer Doggo sniffed item #4... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🏀",
+      "story_text": "Item #4... Could this be a ball?",
+      "features": [
+        9.159583953847255,
+        8.46558177272206,
+        0,
+        592.4687267856515,
+        0
+      ]
     },
     {
       "id": 4,
       "image_path": "item_4.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🍉",
-      "story_text": "Officer Doggo sniffed item #5... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🎱",
+      "story_text": "Item #5... Could this be a ball?",
+      "features": [
+        10,
+        1.7296643579401685,
+        0,
+        150.7042249846876,
+        0
+      ]
     },
     {
       "id": 5,
       "image_path": "item_5.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "⚽",
-      "story_text": "Officer Doggo sniffed item #6... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍎",
+      "story_text": "Item #6... Could this be a ball?",
+      "features": [
+        7.533955644098227,
+        1.873309175424988,
+        10,
+        153.27393017000963,
+        1
+      ]
     },
     {
       "id": 6,
       "image_path": "item_6.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🏀",
-      "story_text": "Officer Doggo sniffed item #7... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍉",
+      "story_text": "Item #7... Could this be a ball?",
+      "features": [
+        6.342277296396194,
+        0.45825359590069836,
+        8.326804987523857,
+        8783.019795163766,
+        0
+      ]
     },
     {
       "id": 7,
@@ -70,71 +125,136 @@
       "image_dir": "balls",
       "ground_truth": 1,
       "emoji": "⚽",
-      "story_text": "Officer Doggo sniffed item #8... Is it a ball?"
+      "story_text": "Item #8... Could this be a ball?",
+      "features": [
+        10,
+        8.279999519708186,
+        0.11389948754929247,
+        466.6152825890888,
+        0
+      ]
     },
     {
       "id": 8,
       "image_path": "item_8.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🏀",
-      "story_text": "Officer Doggo sniffed item #9... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍎",
+      "story_text": "Item #9... Could this be a ball?",
+      "features": [
+        8.685703840379619,
+        1.5519998230924896,
+        9.45809614392821,
+        135.96300731712114,
+        1
+      ]
     },
     {
       "id": 9,
       "image_path": "item_9.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🍎",
-      "story_text": "Officer Doggo sniffed item #10... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "🎱",
+      "story_text": "Item #10... Could this be a ball?",
+      "features": [
+        9.630906096118164,
+        1.5354817519514055,
+        0,
+        174.17311085872174,
+        0
+      ]
     },
     {
       "id": 10,
       "image_path": "item_10.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "⚽",
-      "story_text": "Officer Doggo sniffed item #11... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍉",
+      "story_text": "Item #11... Could this be a ball?",
+      "features": [
+        7.752735252945338,
+        0,
+        9.31087733058976,
+        8812.137421909196,
+        0
+      ]
     },
     {
       "id": 11,
       "image_path": "item_11.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🍎",
-      "story_text": "Officer Doggo sniffed item #12... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Item #12... Could this be a ball?",
+      "features": [
+        10,
+        7.917703705174798,
+        0,
+        427.19647569245853,
+        0
+      ]
     },
     {
       "id": 12,
       "image_path": "item_12.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🌳",
-      "story_text": "Officer Doggo sniffed item #13... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Item #13... Could this be a ball?",
+      "features": [
+        10,
+        7.5254832170458705,
+        0.16917198044708104,
+        485.804059524223,
+        0
+      ]
     },
     {
       "id": 13,
       "image_path": "item_13.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🍌",
-      "story_text": "Officer Doggo sniffed item #14... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Item #14... Could this be a ball?",
+      "features": [
+        9.798801010280794,
+        7.438641518314567,
+        0.9950752129902205,
+        450.8573664308819,
+        0
+      ]
     },
     {
       "id": 14,
       "image_path": "item_14.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍌",
-      "story_text": "Officer Doggo sniffed item #15... Is it a ball?"
-    },
+      "emoji": "🍉",
+      "story_text": "Item #15... Could this be a ball?",
+      "features": [
+        6.181818824347587,
+        0,
+        8.219298260701319,
+        9229.402875065562,
+        0
+      ]
+    }
+  ],
+  "test_set": [
     {
       "id": 15,
       "image_path": "item_15.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
-      "story_text": "Officer Doggo sniffed item #16... Is it a ball?"
+      "emoji": "🌳",
+      "story_text": "Item #16... Could this be a ball?",
+      "features": [
+        3.584158728725928,
+        0,
+        0,
+        781059.085841046,
+        1
+      ]
     },
     {
       "id": 16,
@@ -142,111 +262,209 @@
       "image_dir": "balls",
       "ground_truth": 1,
       "emoji": "🎱",
-      "story_text": "Officer Doggo sniffed item #17... Is it a ball?"
+      "story_text": "Item #17... Could this be a ball?",
+      "features": [
+        10,
+        2.0582286901982743,
+        0.9421567552272363,
+        171.54495047150394,
+        0
+      ]
     },
     {
       "id": 17,
       "image_path": "item_17.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🎱",
-      "story_text": "Officer Doggo sniffed item #18... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍎",
+      "story_text": "Item #18... Could this be a ball?",
+      "features": [
+        7.02296204388564,
+        1.4414436387203893,
+        10,
+        151.10910991226388,
+        1
+      ]
     },
     {
       "id": 18,
       "image_path": "item_18.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🌲",
-      "story_text": "Officer Doggo sniffed item #19... Is it a ball?"
+      "emoji": "🌳",
+      "story_text": "Item #19... Could this be a ball?",
+      "features": [
+        2.533650379905086,
+        0.2819235971596161,
+        0,
+        789562.4401070569,
+        1
+      ]
     },
     {
       "id": 19,
       "image_path": "item_19.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "🏀",
-      "story_text": "Officer Doggo sniffed item #20... Is it a ball?"
+      "emoji": "⚽",
+      "story_text": "Item #20... Could this be a ball?",
+      "features": [
+        9.907447412658414,
+        8.90763185504216,
+        0.7517058807563881,
+        428.7050145675982,
+        0
+      ]
     },
     {
       "id": 20,
       "image_path": "item_20.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍉",
-      "story_text": "Officer Doggo sniffed item #21... Is it a ball?"
+      "emoji": "🌲",
+      "story_text": "Item #21... Could this be a ball?",
+      "features": [
+        1.0011722261005966,
+        0,
+        0.825255678689641,
+        537051.8569836768,
+        1
+      ]
     },
     {
       "id": 21,
       "image_path": "item_21.png",
-      "image_dir": "not_balls",
-      "ground_truth": 0,
-      "emoji": "🌲",
-      "story_text": "Officer Doggo sniffed item #22... Is it a ball?"
+      "image_dir": "balls",
+      "ground_truth": 1,
+      "emoji": "⚽",
+      "story_text": "Item #22... Could this be a ball?",
+      "features": [
+        9.596889582897266,
+        8.27789898973201,
+        0.21794042287634463,
+        418.7555341694671,
+        0
+      ]
     },
     {
       "id": 22,
       "image_path": "item_22.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🎱",
-      "story_text": "Officer Doggo sniffed item #23... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🌲",
+      "story_text": "Item #23... Could this be a ball?",
+      "features": [
+        1.5250216001503025,
+        0.07875806023925147,
+        0.5572529572611165,
+        503035.3672195178,
+        1
+      ]
     },
     {
       "id": 23,
       "image_path": "item_23.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🌳",
-      "story_text": "Officer Doggo sniffed item #24... Is it a ball?"
+      "emoji": "🌲",
+      "story_text": "Item #24... Could this be a ball?",
+      "features": [
+        0.0011437922558870106,
+        0,
+        0,
+        542909.8616264617,
+        1
+      ]
     },
     {
       "id": 24,
       "image_path": "item_24.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🎱",
-      "story_text": "Officer Doggo sniffed item #25... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🌳",
+      "story_text": "Item #25... Could this be a ball?",
+      "features": [
+        3.7574437556463685,
+        0.6633310587223589,
+        0,
+        729268.02663907,
+        1
+      ]
     },
     {
       "id": 25,
       "image_path": "item_25.png",
-      "image_dir": "balls",
-      "ground_truth": 1,
-      "emoji": "🏀",
-      "story_text": "Officer Doggo sniffed item #26... Is it a ball?"
+      "image_dir": "not_balls",
+      "ground_truth": 0,
+      "emoji": "🍌",
+      "story_text": "Item #26... Could this be a ball?",
+      "features": [
+        1.756019198408081,
+        0.8938988905959881,
+        9.171306904135758,
+        119.66377111959874,
+        1
+      ]
     },
     {
       "id": 26,
       "image_path": "item_26.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🌲",
-      "story_text": "Officer Doggo sniffed item #27... Is it a ball?"
+      "emoji": "🌳",
+      "story_text": "Item #27... Could this be a ball?",
+      "features": [
+        2.138425036936767,
+        0.5212043305144631,
+        0.5316688586139755,
+        740542.6343199621,
+        1
+      ]
     },
     {
       "id": 27,
       "image_path": "item_27.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
-      "story_text": "Officer Doggo sniffed item #28... Is it a ball?"
+      "emoji": "🏀",
+      "story_text": "Item #28... Could this be a ball?",
+      "features": [
+        9.950564756197462,
+        9.099607186989887,
+        0,
+        666.1816970945721,
+        0
+      ]
     },
     {
       "id": 28,
       "image_path": "item_28.png",
       "image_dir": "balls",
       "ground_truth": 1,
-      "emoji": "⚽",
-      "story_text": "Officer Doggo sniffed item #29... Is it a ball?"
+      "emoji": "🎱",
+      "story_text": "Item #29... Could this be a ball?",
+      "features": [
+        9.846275880401773,
+        1.423596410884164,
+        0.07859217755891668,
+        167.35779421087926,
+        0
+      ]
     },
     {
       "id": 29,
       "image_path": "item_29.png",
       "image_dir": "not_balls",
       "ground_truth": 0,
-      "emoji": "🍎",
-      "story_text": "Officer Doggo sniffed item #30... Is it a ball?"
+      "emoji": "🍉",
+      "story_text": "Item #30... Could this be a ball?",
+      "features": [
+        6.402302126779392,
+        0,
+        9.990298713321788,
+        9269.780503751017,
+        0
+      ]
     }
   ]
 }
